@@ -3,6 +3,22 @@
 This changelog contains the notable updates to the **RAG-Driven Generative AI** repository.   
 🐬 Indicates *new bonus notebooks* to explore.
 
+## [September 23, 2025]
+
+Bug: RAG_Overview notebook chapter 1 #4
+
+import openai
+from openai import OpenAI
+
+client = OpenAI()
+gptmodel="gpt-4o"
+code line client = OpenAI() raises an error:
+TypeError: Client.init() got an unexpected keyword argument 'proxies'
+
+version of openai is 1.40.3
+
+Resolved with Notebook update:
+update openai to 1.107.2 solved problem
 
 ## [March 12, 2025]
 After having explored GPT-4.5, explanations by GPT-4.5 added to
