@@ -351,3 +351,90 @@ for i, dist in enumerate(results['distances'][0]):
 
 **Issue:** ipywidgets warning for progress bars
 **Workaround:** Install `ipywidgets` (included in dependencies)
+
+**Issue:** Pydantic validation warnings with LlamaIndex 0.10.x
+**Workaround:** Downgrade to `pydantic==2.7.4` or wait for LlamaIndex update
+
+## Notebook Editing Best Practices
+
+When editing Jupyter notebooks programmatically:
+
+**Critical Variables to Track:**
+- Always verify that key variables are defined before usage
+- Common missing variables after cell deletion: `ind`, `documents`, query engines, response objects
+- Use Python scripts to edit notebooks (JSON manipulation) for complex operations
+
+**Variable Naming Conventions:**
+- `vector_query_engine_llm` - Query engine for text-based LLM RAG
+- `vector_query_engine` - Query engine for multimodal RAG
+- `multimodal_response` - Saved response before variable overwriting
+- `response` - Generic query response (often gets overwritten)
+- `documents_llm` - LlamaIndex Documents from text data
+- `documents` - Documents from image/multimodal data
+
+**Cell Dependencies:**
+- Cell order matters: define before use
+- Save critical responses immediately after generation
+- Import statements should precede usage (sklearn, PIL, etc.)
+
+## Chapter 4 Specific Notes
+
+### Multimodal RAG Architecture
+
+**Two Parallel Pipelines:**
+1. **Text Pipeline (LLM):** ChromaDB → LlamaIndex → GPT-4o text response
+2. **Image Pipeline (Vision):** DeepLake → LlamaIndex → GPT-4o vision analysis
+
+**Critical Variable Flow:**
+```python
+# Pipeline 1: Text RAG
+documents_llm = [...]  # From ChromaDB data
+vector_store_index_llm = VectorStoreIndex.from_documents(documents_llm)
+vector_query_engine_llm = vector_store_index_llm.as_query_engine(...)
+llm_response = vector_query_engine_llm.query(user_input)
+
+# Pipeline 2: Multimodal RAG
+documents = [...]  # From DeepLake image labels
+vector_store_index = GPTVectorStoreIndex.from_documents(documents)
+vector_query_engine = vector_store_index.as_query_engine(...)
+response = vector_query_engine.query(user_input)
+multimodal_response = response  # CRITICAL: Save before overwriting!
+```
+
+**Key Functions:**
+- `get_unique_words()` - Extracts unique words from retrieved text
+- `process_and_display()` - Matches query target to image dataset
+- `display_image_with_bboxes()` - Renders images with object detection boxes
+- `display_source_image()` - Shows saved images
+- `calculate_cosine_similarity_with_embeddings()` - Performance evaluation
+
+### DeepLake Integration Pattern
+```python
+# Load cloud dataset (read-only)
+dataset_path = 'hub://activeloop/visdrone-det-train'
+ds = deeplake.load(dataset_path)  # 6,471 images
+
+# Convert to pandas DataFrame
+df = pd.DataFrame(columns=['image', 'boxes', 'labels'])
+for i, sample in enumerate(ds):
+    df.loc[i, 'image'] = sample.images.tobytes()
+    df.loc[i, 'boxes'] = [box.tolist() for box in sample.boxes.numpy(aslist=True)]
+    df.loc[i, 'labels'] = sample.labels.data()['text']
+
+# Add unique IDs for LlamaIndex
+df['doc_id'] = df.index.astype(str)
+```
+
+### Intelligent Target Detection
+The notebook uses query-aware object detection:
+```python
+# Extract target object from user query
+query_words = user_input.lower().split()  # "How do drones identify a truck?"
+target_word = None
+for word in unique_words:  # ["truck", "car", "van"]
+    if word in query_words:  # Matches "truck"
+        target_word = word
+        break
+```
+
+This ensures bounding boxes match the user's intent, not just the most frequent object.
