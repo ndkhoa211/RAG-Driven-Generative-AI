@@ -163,6 +163,49 @@ Multiple index types with performance trade-offs:
 - Production-grade indexing
 - Three-phase pipeline: collection → indexing → generation
 
+### Chapter 5: Adaptive RAG (Human-in-the-Loop)
+**Critical Migration Note:** This chapter was migrated from Google Colab to local Jupyter. All code now uses:
+- `dotenv` for API keys (not Google Colab)
+- `ipywidgets` for interactive feedback (not `google.colab.output`)
+- UTF-8 encoding for Windows compatibility
+- Icon images loaded from `../commons/` directory
+
+**Adaptive RAG Strategy Selection:**
+```python
+# Three RAG strategies based on performance ranking (1-5):
+ranking = 5  # User-configurable
+
+# Ranking 1-2: No RAG (Direct LLM)
+if ranking >= 1 and ranking < 3:
+    text_input = user_input
+
+# Ranking 3-4: Human Expert Feedback RAG only
+if ranking >= 3 and ranking < 5:
+    # Loads human_feedback.txt for domain-specific context
+    text_input = human_feedback_content
+
+# Ranking 5: Document RAG only
+if ranking >= 5:
+    # Wikipedia retrieval with fetch_and_clean()
+    text_input = retrieved_documents
+```
+
+**Three-Phase Pipeline:**
+1. **RETRIEVER:** Wikipedia scraping with robust error handling
+2. **GENERATOR:** Adaptive strategy selection + GPT-4o generation
+3. **EVALUATOR:** Multi-metric scoring (cosine similarity + human ratings)
+
+**Interactive Feedback Interface:**
+- Uses `ipywidgets` buttons (👍/👎) for expert evaluation
+- Saves feedback to `expert_feedback.txt` for adaptive loop
+- Fallback to text mode if icon images not found
+- Tracks mean score history across queries
+
+**Typical Issues:**
+- Missing `.env` file: Create with `OPENAI_API_KEY`
+- Wikipedia fetch errors: Fixed with comprehensive error handling in `fetch_and_clean()`
+- Icon images not found: Place in `commons/` directory or use emoji fallback
+
 ### Chapter 8: Dynamic RAG (Open-Source)
 - Hugging Face Llama-2 integration
 - Cost-effective alternative to OpenAI
@@ -246,6 +289,7 @@ List Index:    0.0475 (most thorough, slowest)
 - Notebooks (`.ipynb`)
 - Configuration (`pyproject.toml`, `.python-version`)
 - Documentation (`README.md`, `CHANGELOG.md`)
+- Shared assets (`commons/thumbs_up.png`, `commons/thumbs_down.png`)
 
 ## Critical Architectural Decisions
 
@@ -264,7 +308,7 @@ List Index:    0.0475 (most thorough, slowest)
 ```
 Chapter 1 (Foundations) → Chapters 2-10 (all build on RAG concepts)
     ↓
-Chapter 2 (Core Pipeline) → Chapter 8 (Dynamic RAG variant)
+Chapter 2 (Core Pipeline) → Chapter 5 (Adaptive RAG) → Chapter 8 (Dynamic RAG)
     ↓
 Chapter 3 (LlamaIndex) → Chapter 7 (Knowledge Graphs)
     ↓
@@ -273,7 +317,7 @@ Chapter 4 (Multimodal) → Chapter 10 (Video)
 Chapter 6 (Scaling) → Chapter 9 (Fine-tuning)
 ```
 
-**Recommended Learning Path:** Chapters 1 → 2 → 3 → 8 for core RAG understanding, then specialized chapters as needed.
+**Recommended Learning Path:** Chapters 1 → 2 → 5 → 3 → 8 for core RAG understanding (includes human-in-the-loop patterns), then specialized chapters as needed.
 
 ## Testing Retrieval Quality
 
@@ -350,7 +394,10 @@ for i, dist in enumerate(results['distances'][0]):
 **Workaround:** Use `display(Markdown(text))` from `IPython.display`, not `markdown.markdown()`
 
 **Issue:** ipywidgets warning for progress bars
-**Workaround:** Install `ipywidgets` (included in dependencies)
+**Workaround:** Install `ipywidgets` (included in dependencies since Chapter 5 update)
+
+**Issue:** Chapter 5 `fetch_and_clean()` AttributeError: 'NoneType' object has no attribute 'find'
+**Workaround:** Fixed in latest version with null checks and comprehensive error handling
 
 **Issue:** Pydantic validation warnings with LlamaIndex 0.10.x
 **Workaround:** Downgrade to `pydantic==2.7.4` or wait for LlamaIndex update

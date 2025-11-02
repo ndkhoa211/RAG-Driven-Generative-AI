@@ -1,0 +1,12 @@
+Keras is a deep learning API designed for human beings, not
+              machines. Keras focuses on debugging speed, code elegance &
+              conciseness, maintainability, and deployability. When you choose
+              Keras, your codebase is smaller, more readable, easier to iterate
+              on. With its multi-backend approach, Keras gives you the freedom to
+                work with JAX, TensorFlow, and PyTorch. Build models that can move
+                seamlessly across these frameworks and leverage the strengths of
+                each ecosystem. Starting from the beginning and learn how to build models using the functional building pattern. Train and evaluate your model using model.fit(...). Learn how to customize your model via subclassing Keras layers. The KerasHub library provides Keras 3 implementations of popular model architectures, paired with a collection of pretrained checkpoints available on Kaggle Models. Models can be used for both training and inference, on any of the TensorFlow, JAX, and PyTorch backends. Google’s family of lightweight language models built from the same research and technology used to create Gemini. Meta’s flagship open text generation models available in a wide range of sizes and precisions. Generate image content with this state of the art diffusion model from Stability AI. A generative language from the French company Mistral AI, making frontier models accessible to all. Take a look at our examples for doing image classification, object detection, video processing, and more. We also have many guides for doing NLP including text classification, machine translation, and language modeling. Get started with generative deep learning with our wealth of guides involving state-of-the-art diffusion models, GANs, and transformer models. Keras is used by CERN, NASA, NIH, and many more scientific
+            organizations around the world (and yes, Keras is used at the Large
+            Hadron Collider). Keras is used by Waymo to power self-driving
+            vehicles. Keras partners with Kaggle and HuggingFace to meet ML
+            developers in the tools they use daily. Sign up to our mailing list for regular updates and discussions about the Keras ecosystem. Listen in at our community meetings, and follow us on social media! We welcome your code, ideas, and feedback as we continue to grow. Visit our roadmap, contribution guide or GitHub for more information.

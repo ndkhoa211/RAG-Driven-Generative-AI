@@ -1,0 +1,1189 @@
+1
+VisDrone-DET2018: The Vision Meets Drone
+Object Detection in Image Challenge Results
+Pengfei Zhu1/enc-12⋆, Longyin Wen2, Dawei Du3, Xiao Bian4, Haibin Ling5,
+Qinghua Hu1, Qinqin Nie1, Hao Cheng1, Chenfeng Liu1, Xiaoyu Liu1, Wenya
+Ma1, Haotian Wu1, Lianjie Wang1, Arne Schumann31, Chase Brown6, Chen
+Qian28, Chengzheng Li29, Dongdong Li27, Emmanouil Michail20, Fan Zhang14,
+Feng Ni22, Feng Zhu21, Guanghui Wang10, Haipeng Zhang13, Han Deng25, Hao
+Liu27, Haoran Wang14, Heqian Qiu36, Honggang Qi18, Honghui Shi9,
+Hongliang Li36, Hongyu Xu7, Hu Lin11, Ioannis Kompatsiaris20, Jian Cheng34,
+Jianqiang Wang33, Jianxiu Yang14, Jingkai Zhou11, Juanping Zhao28, K. J.
+Joseph23, Kaiwen Duan18, Karthik Suresh6, Ke Bo12, Ke Wang14,
+Konstantinos Avgerinakis20, Lars Sommer31,32, Lei Zhang19, Li Yang14, Lin
+Cheng14, Lin Ma26, Liyu Lu1, Lu Ding28, Minyu Huang16, Naveen Kumar
+Vedurupaka24, Nehal Mamgain23, Nitin Bansal6, Oliver Acatay31, Panagiotis
+Giannakeris20, Qian Wang14, Qijie Zhao22, Qingming Huang18, Qiong Liu11,
+Qishang Cheng36, Qiuchen Sun14, Robert Lagani` ere30, Sheng Jiang14, Shengjin
+Wang33, Shubo Wei14, Siwei Wang14, Stefanos Vrochidis20, Sujuan Wang34,
+Tiaojio Lee25, Usman Sajid10, Vineeth N. Balasubramanian23, Wei Li36, Wei
+Zhang25, Weikun Wu16, Wenchi Ma10, Wenrui He21, Wenzhe Yang14, Xiaoyu
+Chen36, Xin Sun17, Xinbin Luo28, Xintao Lian14, Xiufang Li14, Yangliu
+Kuai27, Yali Li33, Yi Luo11, Yifan Zhang34,35, Yiling Liu15, Ying Li15, Yong
+Wang30, Yongtao Wang22, Yuanwei Wu10, Yue Fan25, Yunchao Wei8, Yuqin
+Zhang16, Zexin Wang14, Zhangyang Wang6, Zhaoyue Xia33, Zhen Cui29,
+Zhenwei He19, Zhipeng Deng27, Zhiyao Guo16and Zichen Song36
+1Tianjin University, Tianjin, China.
+2JD Finance, Mountain View, CA, USA.
+3University at Albany, SUNY, Albany, NY, USA.
+4GE Global Research, Niskayuna, NY, USA.
+5Temple University, Philadelphia, PA, USA.
+6Texas A&M University, USA.
+7University of Maryland, USA.
+8University of Illinois at Urbana-Champaign, USA.
+9Thomas J. Watson Research Center, USA.
+10University of Kansas, USA.
+11South China University of Technology, China.
+12Sun Yat-sen University, China.
+13Jiangnan University, China.
+14Xidian University, China.
+15Northwestern Polytechnical University, China.
+16Xiamen University, China.
+17Ocean University of China, China.
+18University of Chinese Academy of Sciences, China.
+19Chongqing University, China.
+ 20Centre for Research and Technology Hellas, Greece.
+21Beijing University of Telecommunication and Post, China.
+22Peking University, China.
+23Indian Institute of Technology, Hyderabad, India.
+24NIT Trichy, India.
+25Shandong University, China.
+26Tencent AI Lab, China.
+27National University of Defense Technology, China.
+28Shanghai Jiao Tong University, China.
+29Nanjing University of Science and Technology, China.
+30University of Ottawa, Canada.
+31Fraunhofer IOSB, Germany.
+32Karlsruhe Institute of Technology, Germany.
+33Tsinghua University, China.
+34Nanjing Artiﬁcial Intelligence Chip Research, Institute of Aut omation, Chinese
+Academy of Sciences, China.
+35Institute of Automation, Chinese Academy of Sciences, Chin a.
+36University of Electronic Science and Technology of China, Chi na.
+Abstract. Object detection is a hot topic with various applications in
+computer vision, e.g., image understanding, autonomous driving, and
+video surveillance. Much of the progresses have been driven by th e avail-
+ability ofobject detectionbenchmark datasets, including PA SCAL VOC,
+ImageNet, and MS COCO. However, object detection on the drone pl at-
+form is still a challenging task, due to various factors such as vie w point
+change, occlusion, and scales. To narrow the gap between current objec-
+t detection performance and the real-world requirements, we organiz ed
+the Vision Meets Drone (VisDrone2018) Object Detection in Image ch al-
+lenge in conjunction with the 15th European Conference on Comput er
+Vision (ECCV 2018). Speciﬁcally, we release a large-scale dron e-based
+dataset, including 8 ,599 images (6 ,471 for training, 548 for validation,
+and 1,580 for testing) with rich annotations, including object boun ding
+boxes, object categories, occlusion, truncation ratios, etc. F eaturing a di-
+verse real-world scenarios, the dataset was collected using vari ous drone
+models, in diﬀerent scenarios (across 14 diﬀerent cities spanne d over
+thousands of kilometres), and under various weather and light ing condi-
+tions. We mainly focus on ten object categories in object detecti on,i.e.,
+pedestrian, person, car, van, bus, truck, motor, bicycle, awning -tricycle,
+and tricycle. Some rarely occurring special vehicles ( e.g., machineshop
+truck, forklift truck, and tanker) are ignored in evaluation. The dat aset
+is extremely challenging due to various factors, including large scale and
+pose variations, occlusion, and clutter background. We presen t the eval-
+uation protocol of the VisDrone-DET2018 challenge and the comp arison
+results of 38 detectors on the released dataset, which are public ly avail-
+able on the challenge website: http://www.aiskyeye.com/ . We expect
+the challenge to largely boost the research and development in o bject
+detection in images on drone platforms.
+⋆Email address: zhupengfei@tju.edu.cn The Vision Meets Drone VisDrone2018 Challenge Results 3
+Keywords: Performance evaluation, drone, object detection in images.
+1 Introduction
+Detecting objects in images, which aims to detect objects of the pre deﬁned set of
+object categories ( e.g., cars and pedestrians), is a problem with a long history [9,
+17,32,40,50]. Accurate object detection would have immediate and far reaching
+impact on many applications, such as image understanding, video surveil lance,
+and anomaly detection. Although object detection attracts much research an d
+has achieved signiﬁcant advances with the deep learning techniques in recent
+years, these algorithms are not usually optimal for dealing with sequenc es or
+images captured by drone-based platforms, due to various challenges suc h as
+view point change, scales and occlusion.
+To narrow the gap between current object detection performance and th e
+real-world requirements, we organized the “Vision Meets Drone - Objec t Detec-
+tion in Images (VisDrone-DET2018) challenge, which is one track of the “Vision
+Meets Drone: A Challenge” (or VisDrone2018, for short) on September 8, 2018,
+in conjunction with the 15th European Conference on Computer Vision (ECC V
+2018) in Munich, Germany. We collected a large-scale object detection dat aset
+in real scenarios with detailed annotations. The VisDrone2018 challenge main ly
+focus on human and vehicles in our daily life. The comparisons of the prop osed
+dataset and previous datasets are presented in Table 1.
+We invite researchers to submit algorithms to detect objects of ten predeﬁned
+categories ( e.g., pedestrian and car) from individual images in the VisDrone-
+DET2018 dataset, and share their research results at the workshop. We bel ieve
+this comprehensive challenge benchmark is useful to further boos t research on
+object detection on drone platforms. The authors of the detection algorith ms in
+this challenge have an opportunity to share their ideas and publish th e source
+code at our website: http://www.aiskyeye.com/ , which are helpful to promote
+the development of object detection algorithms.
+2 Related Work
+2.1 Existing Datasets
+Several object detection benchmarks have been collected for evaluat ing object
+detection algorithms. Enzweiler and Gavrila  present the Daimle r dataset,
+captured by a vehicle driving through urban environment. The datase t includes
+3,915 manually annotated pedestrians in video images in the training set, an d
+21,790 video images with 56 ,492 annotated pedestrians in the testing set. The
+Caltech dataset  consists of approximately 10 hours of 640 ×480 30Hz videos
+taken from a vehicle driving through regular traﬃc in an urban environme nt. It
+contains ∼250,000 frames with a total of 350 ,000 annotated bounding boxes
+of 2,300 unique pedestrians. The KITTI-D benchmark  is designed to ev alu-
+ate the car, pedestrian, and cyclist detection algorithms in autonomous d riving 4 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+Table 1: Comparisons of current state-of-the-art benchmarks and datasets for
+object detection. Note that, the resolution indicates the maximum res olution of
+the videos/images included in the dataset.
+Datasets scen. #img.cat.avg. #labels/cat. res. occ.year
+UIUC  life1,3781 739 200×150 2004
+INRIA  life2,2731 1,774 96×160 2005
+ETHZ  life2,2931 10.9k 640×480 2007
+TUD  life1,8181 3,274 640×480 2008
+EPFL Car  exhibition 2,0001 2,000 376×250 2009
+Caltech  driving 249k1 347k 640×480√2012
+KITTI  driving 15.4k2 80k 1241×376√2012
+VOC2012  life22.5k20 1,373 469×387√2012
+ImageNet  life456.2k200 2,007 482×415√2013
+MS COCO  life328.0k91 27.5k 640×640 2014
+VEDAI  satellite 1.2k9 733 1024×1024 2015
+COWC  aerial 32.7k1 32.7k2048×2048 2016
+CARPK  drone 1,4481 89.8k 1280×720 2017
+VisDrone-DET2018 drone 8,59910 46.6k2000×1500√2018
+scenarios, with 7 ,481 training and 7 ,518 testing images. Mundhenk et al.
+create a large dataset for classiﬁcation, detection and counting of cars, wh ich
+contains 32 ,716 unique cars from six diﬀerent image sets, diﬀerent geographical
+locations and diﬀerent imagers. The recent UA-DETRAC benchmark [47,33]
+provides 1 ,210kobjects in 140 kframes for vehicle detection.
+The PASCAL VOC dataset [16,15] is one of the pioneering works in gener-
+ic object detection, which is designed to provide a standardized t est bed for
+object detection, image classiﬁcation, object segmentation, person lay out, and
+actionclassiﬁcation.ImageNet[10,41]followsthefootstepsofthePASCALVO C
+dataset by scaling up more than an order of magnitude in the number of object
+classes and images, i.e., PASCAL VOC 2012 with 20 object classes and 21 ,738
+imagesvs.ILSVRC2012 with 1 ,000 object classes and 1 ,431,167 annotated im-
+ages. Recently, Lin et al. release the MS COCO dataset, containing more
+than 328 ,000 images with 2 .5 million manually segmented object instances. It
+has 91 object categories with 27 .5kinstances on average per category. Notably,
+it contains object segmentation annotations that are not available in ImageNet.
+2.2 Review of Object Detection Methods
+Classical object detectors. In early days, the object detection methods are
+constructed based on the sliding-window paradigm, which use the hand -crafted
+features and classiﬁers on dense image grids to locate objects. As one of pr evi-
+ous most popular frameworks, Viola and Jones  use Haar feature and Ad-
+aboost algorithm to learn a series of cascaded classiﬁers for face detecti on, which
+achieves accurate results with high eﬃciency. Felzenszwalb et al. develop an
+eﬀective object detection method based on mixtures of multiscale d eformable The Vision Meets Drone VisDrone2018 Challenge Results 5
+part models. Speciﬁcally, they calculate the Histograms of Oriented G radients
+(HOG) features on each part of object and train the latent SVM (a reformula-
+tion of MI-SVM in terms of latent variables) for robust performance. Howev er,
+the classical object detectors do not perform well in challenging sce narios. In
+recent years, with the advance of deep Convolutional Neural Network (CNN),
+the object detection ﬁeld is dominated by the CNN-based detectors, wh ich can
+be roughly divided into two categories, i.e., the two-stage approach and the
+one-stage approach.
+Two-stage CNN-based methods. The two-stage approach ﬁrst generates a
+pool of object proposals by a separated proposal generator and then predicts t he
+accurate object regions and the corresponding class labels, such as R-CNN ,
+SPP-Net , Fast R-CNN , Faster R-CNN , R-FCN , Mask R-CNN
+, and FPN .
+R-CNN  is one of the pioneering works using the CNN model pre-traine d
+on ImageNet, which extracts a ﬁxed-length feature vector from each propos al
+using a CNN, and then classiﬁes each region with category-speciﬁc linear SVM.
+SPP-Net  proposes the SPP layer that pools the features and generates ﬁxed
+length outputs to remove the ﬁxed input size constraint of the CNN mo del. In
+contrast to SPP , Fast R-CNN  designs a single-stage training algorith m
+that jointly learns to classify object proposals and reﬁne their spatial locations
+in an end-to-end way. Faster R-CNN  further improves Fast R-CNN us ing a
+region proposal network instead of the selective search algorithm  to ex tract
+the region proposals. The R-FCN method  develops a fully convolution al net-
+work(FCN)tosolveobjectdetection,whichconstructsasetofpositi on-sensitive
+maps using a bank of specialized convolutional layers to incorporate tran slation
+variance into FCN. Recently, Lin et al. exploit the inherent multi-scale,
+pyramidal hierarchy of deep convolutional networks to construct featur e pyra-
+mids with marginal extra cost to improve the detection performance. In ,
+the head of network is designed as light as possible to decrease the comp utation
+cost, by using a thin feature map and a cheap R-CNN subnet (pooling and s ingle
+fully-connected layer). Zhang et al. propose a new occlusion-aware R-CNN
+to improve the pedestrian detection in the crowded scenes, whi ch designs an
+aggregation loss to enforce proposals to be close and locate compactly to the
+corresponding objects. In general, the aforementioned methods share almost the
+same pipeline for object detection ( i.e., object proposal generation, feature ex-
+traction, object classiﬁcation and bounding box regression). The region proposal
+generating stage is the bottleneck to improve running eﬃciency.
+One-stage CNN-based methods. Diﬀerent from the two-stage approach, the
+one-stage approach directly predicts the object locations, shapes and the class
+labelswithouttheproposalextractionstage,whichcanruninhigheﬃcie ncy.The
+community witnesses the noticeable improvements in this direc tion, including
+YOLO , SSD , DSSD , ReﬁneDet , and RetinaNet .
+Speciﬁcally, YOLO  formulates object detection as a regression proble m
+to spatially separated bounding boxes and associated class probabiliti es. After 6 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+that, Redmon et al. improve YOLO in various aspects, such as adding batch
+normalization on all of the convolutional layers, using anchor boxes to pre dict
+bounding boxes, and using multi-scale training. SSD  takes advantage of a
+set of default anchor boxes with diﬀerent aspect ratios and scales to di scretize
+the output space of bounding boxes and fuses predictions from multip le feature
+maps with diﬀerent resolutions. DSSD  augments SSD with deconvolu tion
+layers to introduce additional large scale context in object detecti on to improve
+accuracy, especially for small objects. Zhang et al. enrich the semantics of
+object detection features within SSD, by a semantic segmentation br anch and a
+globalactivationmodule.Lin et al.useFocalLoss(RetinaNet)toaddressthe
+class imbalance issue in object detection by reshaping the standard c ross entropy
+loss such that it down-weights the loss assigned to well-classiﬁed e xamples. In
+addition, Zhang et al. propose a single-shot detector ReﬁneDet. It is formed
+by two inter-connected modules, i.e., the anchor reﬁnement module and the
+object detection module, which achieves high accuracy and eﬃciency . Moreover,
+Chenet al. propose a dual reﬁnement network to boost the performance of
+the one-stage detectors, which considers anchor reﬁnement and featur e oﬀset
+reﬁnement in the anchor-oﬀset detection.
+Fig.1: The number of objects with diﬀerent occlusion degrees of diﬀe rent ob-
+ject categories in the training ,validation andtesting sets for the object
+detection in images task.
+3 The VisDrone-DET2018 Challenge
+As mentioned above, to track and advance the developments in object det ec-
+tion, we designed the VisDrone-DET2018 challenge, which focuses on det ect-
+ing ten predeﬁned categories of objects ( i.e.,pedestrian ,person1,car,van,bus,
+truck,motor,bicycle,awning-tricycle , andtricycle) in images from drones. We
+require each participating algorithm to predict the bounding boxes of objects
+in predeﬁned classes with a real-valued conﬁdence. Some rarely occ urring spe-
+cial vehicles ( e.g., machineshop truck, forklift truck, and tanker) are ignored in
+1If a human maintains standing pose or walking, we classify it a s apedestrian ; other-
+wise, it is classiﬁed as a person. The Vision Meets Drone VisDrone2018 Challenge Results 7
+Fig.2: The number of objects per image vs.percentage of images in the
+training ,validation andtesting sets for object detection in images. The
+maximal, mean and minimal number of objects per image in the three subse ts
+are presented in the legend.
+the evaluation. The VisDrone-DET2018 dataset consists of 8 ,599 images (6 ,471
+for training, 548 for validation, 1 ,580 for testing) with rich annotations, includ-
+ing object bounding boxes, object categories, occlusion, and truncat ion ratios.
+Featuring a diverse real-world scenarios, the dataset was collected u sing vari-
+ous drone platforms ( i.e., drones with diﬀerent models), in diﬀerent scenarios
+(across 14 diﬀerent cities spanned over thousands of kilometres), and under var-
+ious weather and lighting conditions. The manually annotated ground truth s in
+thetraining andvalidation sets are made available to users, but the ground
+truths of the testing set are reserved in order to avoid (over)ﬁtting of algo-
+rithms. We encourage the participants to use the provided training data, while
+also allow them to use additional training data. The use of external data m ust
+be indicated during submission.
+3.1 Dataset
+The dataset and annotations presented in this workshop are expected to b e a
+signiﬁcantcontributiontothecommunity.Asmentionedabove,wehav ecollected
+and annotated the benchmark dataset consisting of 8 ,599 images captured by
+drone platforms in diﬀerent places at diﬀerent heights, which is mu ch larger
+than any previously published drone-based dataset. Speciﬁcally, we manually
+annotatedmorethan540 kboundingboxesoftargetsoftenpredeﬁnedcategories.
+Some example images are shown in Fig. 3. We present the number of objects
+with diﬀerent occlusion degrees of diﬀerent object categories in th etraining ,
+validation , andtesting sets in Fig. 1, and plot the number of objects per
+imagevs.percentage of images in each subset to show the distributions of the 8 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+Fig.3: Some annotated example images of the object detection in images task.
+The dashed bounding box indicates the object is occluded. Diﬀere nt bounding
+box colors indicate diﬀerent classes of objects. For better visualiz ation, we only
+display some attributes.
+number of objects in each image in Fig. 2. The images of the three subsets ar e
+taken at diﬀerent locations, but share similar environments and attri butes.
+In addition, we provide two kinds of useful annotations, occlusion rat io and
+truncation ratio. Speciﬁcally, we use the fraction of pixels being oc cluded to
+deﬁne the occlusion ratio, and deﬁne three degrees of occlusions: no occlusion
+(occlusion ratio 0%), partial occlusion (occlusion ratio 1% ∼50%), and heavy
+occlusion (occlusion ratio >50%). Regarding truncation ratio, it is used to
+indicate the degree of object parts that appear outside a frame. If an objec t
+is not fully captured within a frame, we annotate the bounding box ins ide the
+frame boundary and estimate the truncation ratio based on the region outsid e
+the image. It is worth mentioning that a target is skipped during evalu ation if
+its truncation ratio is larger than 50%.
+3.2 Evaluation Protocol
+We require each participating algorithm to output a list of detected b ounding
+boxes with conﬁdence scores for each test image. Following the evaluat ion pro-
+tocol in MS COCO , we use the APIoU=0.50:0.05:0.95, APIoU=0.50, APIoU=0.75,
+ARmax=1, ARmax=10, ARmax=100and ARmax=500metrics to evaluate the results
+of detection algorithms. These criteria penalize missing detecti on of objects as
+well as duplicate detections (two detection results for the same obj ect instance).
+Speciﬁcally, APIoU=0.50:0.05:0.95is computed by averaging over all 10 Intersec-
+tion over Union (IoU) thresholds ( i.e., in the range [0 .50 : 0.95] with the uniform
+step size 0 .05) of all categories, which is used as the primary metric for ranking.
+APIoU=0.50and APIoU=0.75are computed at the single IoU thresholds 0 .5 and The Vision Meets Drone VisDrone2018 Challenge Results 9
+0.75 over all categories, respectively. The ARmax=1, ARmax=10, ARmax=100and
+ARmax=500scores are the maximum recalls given 1, 10, 100 and 500 detections
+per image, averaged over all categories and IoU thresholds. Please refer t o 
+for more details.
+4 Results and Analysis
+4.1 Submitted Detectors
+There are 34 diﬀerent object detection methods from 31 diﬀerent ins titutes sub-
+mitted to the VisDrone-DET2018 challenge. The VisDrone committee also r e-
+ports the results of the 4 baseline methods, i.e., FPN (A.35) , R-FCN (A.36)
+, Faster R-CNN (A.37) , and SSD (A.38) . For these baselines, the
+default parameters are used or set to reasonable values. Thus, there are 38 algo-
+rithms in total included in the VisDrone-DET2018 challenge. We presen t a brief
+overview of the entries and provide the algorithm descriptions in Ap pendix A.
+Nine submitted detectors improve the Faster R-CNN method , name -
+ly JNUFaster RCNN (A.5), Faster R-CNN3 (A.7), MMN (A.9), CERTH-ODI
+(A.13), MFaster-RCNN (A.14), Faster R-CNN2 (A.16), IITH DODO (A.18),
+Faster R-CNN+ (A.19), and DPNet (A.34). Seven detectors are based on the
+FPN method , including FPN+ (A.1), DE-FPN (A.3), DFS (A.4), FPN2
+(A.11), DDFPN (A.17), FPN3 (A.21), and DenseFPN (A.22). Three detectors
+are inspired from RetinaNet , including Keras-RetinaNet (A.27), Ret inaNet2
+(A.28), and HAL-Retina-Net (A.32). Three detectors, i.e., ReﬁneDet+ (A.10),
+RD4MS (A.24), and R-SSRN (A.30), are based on the ReﬁneDet method .
+Five detectors, i.e., YOLOv3+ (A.6), YOLOv3++ (A.12), YOLOv3 DP (A.26),
+MSYOLO (A.29) and SODLSY (A.33), are based on the YOLOv3 method .
+CFE-SSDv2 (A.15) is based on the SSD method . SOD (A.23) is based on
+the R-FCN method . L-H RCNN+ (A.25) is modiﬁed from the light-head R-
+CNN method . AHOD (A.31) is a feature fusion backbone network with the
+capability of modeling geometric transformations. MSCNN (A.20) is formed b y
+two sub-networks: a multi-scale object proposal network (MS-OPN)  and an
+accurate object detection network (AODN) . YOLO-R-CNN (A.2) and MMF
+(A.8) are the combinations of YOLOv3 and Faster R-CNN. We summarize the
+submitted algorithms in Table 3.
+4.2 Overall Results
+The overall results of the submissions are presented in Table 2. As sh own in
+Table2,weﬁndthatHAL-Retina-Net(A.32)andDPNet(A.34)aretheonlytwo
+algorithms achieving more than 30% AP score. HAL-Retina-Net (A.32) uses the
+SE module  and downsampling-upsampling  to learn channel atten tion
+and spatial attention. DPNet (A.34) employs the framework of FPN  to
+capture context information in diﬀerent scales of feature maps. DE-FP N (A.3)
+and CFE-SSDv2 (A.15) rank in the third and fourth places with more than 10 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+Table 2: Object detection results on the VisDrone-DET2018 testing set. The
+submitted algorithms are ranked based on the AP score. ∗indicates that the
+detection algorithm is submitted by the committee.
+Method AP[%] AP 50[%] AP 75[%]AR1[%] AR 10[%] AR 100[%] AR 500[%]
+HAL-Retina-Net 31.88 46.18 32.12 0.97 7.50 34.43 90.63
+DPNet 30.9254.62 31.17 1.05 8.00 36.80 50.48
+DE-FPN 27.10 48.72 26.58 0.90 6.97 33.58 40.57
+CFE-SSDv2 26.48 47.30 26.08 1.16 8.76 33.85 38.94
+RD4MS 22.68 44.85 20.24 1.55 7.45 29.63 38.59
+L-H RCNN+ 21.34 40.28 20.42 1.08 7.81 28.56 35.41
+Faster R-CNN2 21.34 40.18 20.31 1.36 7.47 28.86 37.97
+ReﬁneDet+ 21.07 40.98 19.65 0.78 6.87 28.25 35.58
+DDFPN 21.05 42.39 18.70 0.60 5.67 28.73 36.41
+YOLOv3 DP20.03 44.09 15.77 0.72 6.18 26.53 33.27
+MFaster-RCNN 18.08 36.26 16.03 1.39 7.78 26.41 26.41
+MSYOLO 16.89 34.75 14.30 0.93 5.98 23.01 26.35
+DFS 16.73 31.80 15.83 0.27 2.97 26.48 36.26
+FPN2 16.15 33.73 13.88 0.84 6.73 23.32 30.37
+YOLOv3+ 15.26 33.06 12.50 0.68 5.77 21.15 23.83
+IITH DODO 14.04 27.94 12.67 0.82 5.86 21.02 29.00
+FPN3 13.94 29.14 11.72 0.81 6.08 22.98 22.98
+SODLSY 13.61 28.41 11.66 0.60 5.20 19.26 23.68
+FPN∗13.36 27.05 11.81 0.77 5.65 20.54 25.77
+FPN+ 13.32 26.54 11.90 0.84 5.87 22.20 22.20
+AHOD 12.77 26.37 10.93 0.56 4.36 17.49 18.87
+DFP 12.58 25.13 11.43 0.88 6.20 19.63 21.27
+YOLO-R-CNN 12.06 27.98 8.95 0.50 4.39 19.78 23.05
+MMN 10.40 20.66 9.43 0.41 5.22 18.28 19.97
+YOLOv3++ 10.25 21.56 8.70 0.48 4.31 15.61 15.76
+Faster R-CNN+ 9.67 18.21 9.54 1.19 6.74 16.40 16.40
+R-SSRN 9.49 21.74 7.29 0.36 3.27 17.07 21.63
+JNUFaster RCNN 8.72 15.56 8.98 1.02 6.20 12.18 12.18
+SOD 8.27 20.02 5.80 0.39 3.78 14.12 17.19
+Keras-Retina-Net 7.72 12.37 8.68 0.62 5.65 10.76 10.80
+MMF 7.54 16.53 6.03 1.28 5.91 14.28 14.36
+R-FCN∗7.20 15.17 6.38 0.88 5.35 12.04 13.95
+RetinaNet2 5.21 10.02 4.94 0.38 3.54 11.55 14.25
+CERTH-ODI 5.04 10.94 4.12 1.65 5.93 9.05 9.05
+Faster R-CNN3 3.65 7.20 3.39 0.64 2.41 10.08 21.85
+Faster R-CNN∗3.55 8.75 2.43 0.66 3.49 6.51 6.53
+MSCNN 2.89 5.30 2.89 0.59 2.18 9.33 15.38
+SSD∗2.52 4.78 2.47 0.58 2.81 4.51 6.41
+25% AP score, respectively. We also report the detection results of eac h object
+category in Table 4. As shown in Table 4, we observe that all the top three
+results of diﬀerent kinds of objects are produced by the detectors with top four The Vision Meets Drone VisDrone2018 Challenge Results 11
+Table 3: The descriptions of the submitted algorithms in the VisDrone- DET2018
+challenge. The tracking speed (in FPS), GPUs for training, backbone ne twork,
+training datasets (I is imageNet, L is ILSVRC, P is COCO, V is VisDrone-
+DET2018 train set) and implementation details are reported. The ∗mark is
+used to indicate the methods are submitted by the VisDrone committ ee.
+Submission Speed GPUs Backbone Train Data Impl.
+FPN+(A.1) 1 GTX 1080TI ×6 ResNet-101 I,V Python
+YOLO-R-CNN(A.2) GTX Titan XP ×1 VPyTorch
+DE-FPN(A.3) GTX 1080TI ×4 ResNeXt-101 C,V
+DFS(A.4) GTX Titan PASCAL ×2ResNet-101 I,V Python
+JNUFaster RCNN(A.5) GTX K80 ×4 ResNet-101 VPython
+YOLOv3+(A.6) 19.61 GTX TIT ×1 C,V Python
+Faster R-CNN3(A.7) 0.14GTX Titan Xp ×2 ResNet-101 VPyTorch
+MMF(A.8)ResNet-152 VPythonDarkNet-53
+MMN(A.9) 8.33 GTX 1080TI ×2 ResNet-101 VPython
+ReﬁneDet+(A.10) 10 GTX Titan X ×4 VGG16 L,V Caﬀe
+FPN2(A.11) 1.8GTX 1080TI ×1 ResNet-50 I,V Caﬀe
+YOLOv3++(A.12) GTX Titan XP ×1 DarkNet-53 VPyTorch
+CERTH-ODI(A.13) 1 GTX 1070 ×1Inception Resnet v2 VPython
+MFaster-RCNN(A.14) 1.7GTX 1080TI ×1 ResNet-101 VPyTorch
+CFE-SSDv2(A.15) 1GTX Titan XP ×4 VGG16 VPyTorch
+Faster R-CNN2(A.16) GTX 1080 ×1 VGG16 I,V Python
+DDFPN(A.17) GTX 1080TI ×1 ResNet-101 I,VPython
+C++
+IITH DODO(A.18) 0.61 Tesla P-100 ×1Inception ResNet-v2 C,V Python
+Faster R-CNN+(A.19) VGG16 I,V Python
+MSCNN(A.20) GTX 1080TI ×1 VCaﬀe
+Matlab
+FPN3(A.21)ResNet-50I,V PythonResNet-101
+DenseFPN(A.22) 8.33 GTX 1080TI ×2 ResNet-101 I,V Python
+SOD(A.23) 7.25GTX Titan X ×1 VGG16 VPython
+RD4MS(A.24) GTX Titan X ×2ResNet-50V CaﬀeSEResNeXt-50
+L-H RCNN+(A.25) GTX Titan X ×1 ResNet-101 VPython
+YOLOv3 DP(A.26) 8.33GTX Titan X ×1 VPython
+Keras-RetinaNet(A.27) 1.28GTX Titan X ×1 VPython
+RetinaNet2(A.28) GTX Titan X ×1 VPython
+MSYOLO(A.29) GTX 1080 ×1 VPython
+R-SSRN(A.30) 11.8GTX 1080TI ×1 VGG16 L,V Python
+AHOD(A.31) GTX Titan X ×1 VPython
+HAL-Retina-Net(A.32) 4GTX Titan XP ×6SE-ResNeXt-50 C,V Caﬀe
+SODLSY(A.33) 9 GTX 1080TI ×1 V
+DPNet(A.34) GTX Titan XP ×8ResNet-50
+V Caﬀe2 ResNet-101
+ResNeXt
+FPN∗(A.35) 8 Tesla P100 ×1 ResNet-101 VPython
+R-FCN∗(A.36) 7.3GTX Titan X ×1 ResNet-101 VPython
+Faster R-CNN∗(A.37) 7 GTX Titan X ×1 VGG16 VPython
+SSD∗(A.38) 19 GTX Titan X ×1 VGG16 VPython
+AP scores (see Table 2), i.e., HAL-Retina-Net (A.32), DPNet (A.34), DE-FPN
+(A.3), and CFE-SSDv2 (A.15).
+Among the 4 baseline methods provided by the VisDrone committee, FP N
+(A.35) achieves the best performance, SSD (A.38) performs the worst, and R -
+FCN (A.36) performs better than Faster R-CNN (A.37). These results of the
+algorithms are consistent with that in the MS COCO dataset . 12 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+–SSD (A.38) performs worst, only producing 2 .52% AP score. CFE-SSDv2
+(A.15) is an improvement of SSD (A.38), which uses a new comprehensive
+feature enhancement mechanism to highlight the weak features of small ob-
+jects and adopts the multi-scale testing to further improve the p erformance.
+Speciﬁcally, it brings a signiﬁcant improvement on AP score ( i.e., 26.48%),
+ranking the fourth place.
+–Faster R-CNN(A.37) performs slightly betterthan 2 .89% AP.DPNet (A.34)
+uses three Faster R-CNN models to detect diﬀerent scales of object s. Specif-
+ically, the authors train FPN  architecture based Faster R-CNN mode ls
+with multiple scales ( i.e., 1000×1000,800×800,600×600), achieving the
+second best AP score (30 .92%). Faster R-CNN2 (A.16) and Faster R-CNN+
+(A.19) design the size of anchors to adapt to the distribution of objects,
+producing 21 .34% and 9 .67% AP score, respectively. MFaster-RCNN (A.14)
+replaces the ROI pooling layer with ROI align layer proposed in Mask R -
+CNN  to get better results for small object detection, i.e., obtaining
+18.08% AP score.
+–R-FCN (A.36) achieves much better performance than SSD and Faster R-
+CNN,i.e.,producing7 .20%AP.However,itsaccuracyisstillnotsatisfactory.
+SOD (A.23) use the pyramid-like prediction network for RPN and R-FCN
+ to improve object detection performance. In this way, the pred ictions
+made by higher level feature maps contain stronger contextual semantics
+whilethelowerlevelonesintegratemorelocalizedinformationatﬁne rspatial
+resolution. It generates 0 .93% high AP score than R-FCN (A.36), i.e., 8.27%
+vs.7.20%.
+–FPN (A.35) performs the best among the 4 baseline methods by achieving
+13.36 AP score, ranking in the middle of all submissions. We speculate that
+the extracted semantic feature maps at all scales are eﬀective to deal w ith
+the objects with various scales. To further improve the accuracy, D E-FPN
+(A.3) enhances the data augmentation part by image cropping and color
+jitter, achieving 27 .10% AP, ranking the third place. DDFPN (A.17) uses
+the DBPN  super resolution network to up-sample the image, produc ing
+21.05% AP. FPN2 (A.11) implements an additional keypoint classiﬁcation
+module to help locate the object, improving 2 .79% AP score comparing to
+FPN (A.35).
+4.3 Discussion
+As shown in Table 3, we ﬁnd that 18 detectors perform better than all the
+baseline methods. The best detector HAL-Retina-Net (A.32) achieves 31 .88%
+AP score, which is still far from satisfactory in real applications. In th e following,
+we discuss some critical issues in object detection on drone platform s.
+Large scale variations. As shown in Fig. 3, the objects have a substantial
+diﬀerence in scales, even for the objects in the same category. For exam ple, as
+shown in the top-left of Fig. 3, cars on the bottom of the image appear larger The Vision Meets Drone VisDrone2018 Challenge Results 13
+Table 4: The APIoU=0.50:0.05:0.95scores on the VisDrone2018 testing set of each
+object category. ∗indicates the detection algorithms submitted by the VisDrone
+committee. The top three results are highlighted in red,blueandgreenfonts.
+Detectors ped.peoplebicycle carvantrucktricycleawn.busmotor
+FPN+ 26.5424.5822.2919.4015.8211.908.003.780.840.03
+YOLO-R-CNN 27.9824.8821.4117.4713.228.954.751.670.260.01
+DE-FPN 48.7246.5443.4239.2633.6026.5818.6410.713.340.15
+DFS 31.8029.9627.6424.4620.5715.8310.435.201.380.06
+JNUFaster RCNN 15.5614.6813.6612.2210.708.986.593.760.990.03
+YOLOv3+ 33.0629.9026.4822.1917.7112.507.372.890.460.01
+Faster R-CNN3 40.1837.8534.9230.9326.1420.3113.727.162.100.12
+MMF 16.5315.0713.2510.858.476.033.561.420.230.01
+MMN 20.6618.7416.8014.5012.109.436.613.771.290.06
+ReﬁneDet+ 40.9838.1134.5730.0125.1119.6513.356.911.940.07
+FPN2 33.7330.7327.1623.0818.5513.888.984.321.050.04
+YOLOv3++ 21.5619.8517.8715.1111.988.705.081.960.320.01
+CERTH-ODI 10.949.848.707.295.774.122.491.100.190.01
+MFaster-RCNN 36.2633.5230.0725.9221.316.0310.565.601.500.04
+CFE-SSDv2 47.3045.2342.4038.3732.8926.0818.3310.173.690.29
+Faster R-CNN2 7.206.635.995.284.443.392.201.070.230.01
+DDFPN 42.3939.4235.8431.0825.4218.711.545.130.990.02
+IITH DODO 27.9425.7223.0419.9416.5712.678.684.571.280.04
+Faster R-CNN+ 18.2116.8815.5113.9411.919.546.673.210.810.03
+MSCNN 5.304.964.554.113.602.892.091.100.300.02
+FPN3 29.1427.0424.0820.3616.3311.727.113.050.540.01
+DenseFPN 25.1323.1620.7717.9714.811.437.853.700.930.02
+SOD 20.0217.4614.8512.109.005.802.670.710.080.00
+RD4MS 44.8541.7437.8732.9727.1120.2413.386.671.850.08
+L-H RCNN+ 40.2837.6934.4130.6125.7520.4214.167.622.400.13
+YOLOv3 DP44.0940.1635.4929.6923.0815.778.532.990.470.01
+Keras-RetinaNet 12.3712.1011.5810.9710.078.686.613.791.020.03
+RetinaNet 10.029.298.437.396.254.943.421.850.470.01
+MSYOLO 34.7532.3729.3225.3120.1814.38.543.530.570.01
+R-SSRN 21.7419.3316.7513.7410.557.293.931.370.190.01
+AHOD 26.3724.4521.8818.6814.8210.936.813.130.580.01
+HAL-Retina-Net 46.1844.3442.2439.6336.2732.1226.8720.8816.0114.24
+SODLSY 28.4125.9623.0619.6515.6911.667.463.470.710.02
+DPNet 54.6252.4649.3145.0638.9731.1721.7911.853.780.17
+FPN∗27.0525.0322.3819.3215.7311.817.753.710.840.03
+R-FCN∗15.1713.5912.0910.588.86.383.761.390.190.01
+Faster R-CNN∗8.757.626.535.033.722.431.080.320.040.00
+SSD∗4.784.474.133.693.102.471.640.730.140.00
+than cars on the top-right side of the image. This factor greatly challenges t he
+performance of the detectors. For better performance, it is necessar y to redesign
+the anchor scales to adapt to scales of objects in the dataset, and it is also
+interesting to design an automatic mechanism to handle the objects wi th large 14 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+scale variations in object detection. Meanwhile, fusing multi-lev el convolutional
+features to integrate contextual semantic information is also eﬀectiv e to handle
+scale variations, just like the architecture in FPN (A.35). In addition , multi-scale
+testing and model ensemble are eﬀective to deal with the scale vari ations.
+Occlusion. Occlusion is one of the critical issues challenging the detection pe r-
+formance, especially in our VisDrone2018 dataset (see Fig. 3). For example, as
+shown in Fig. 1, most of the instances in busandmotorcategories, are occluded
+by other objects or background obstacles, which greatly hurt the detect ion per-
+formance. Speciﬁcally, the best detector HAL-Retina-Net (A.32) only prod uces
+less than 20% AP scores in these two categories. All the other detectors ev en
+produces less than 1% AP score on the motorclass. In summary, it is important
+and urgent to design an eﬀective strategy to solve the occlusion challe nge to
+improve the detection performance.
+Class imbalance. Class imbalance is another issue of object detection. As
+shown in Fig. 1, there are much less awning-tricycle ,tricycle, andbusinstances
+in thetraining set than the instances in the carandpedestrian classes. Most
+of the detectors perform much better on the carandpedestrian classes than
+on theawning-tricycle ,tricycle, andbusclasses. For example, DPNet (A.34)
+produces 45 .06% and 54 .62% APs on the carandpedestrian classes, while only
+produces 11 .85%, 21.79%, and 3 .78% APs on the awning-tricycle ,tricycle, and
+busclasses, see Table 4 for more details. The most straightforward and common
+approach is using the sampling strategy to balance the samples in diﬀer ent class-
+es. Meanwhile, some methods ( i.e., Keras-RetinaNet (A.27), RetinaNet2 (A.28))
+integrate the weights of diﬀerent object classes in the loss function to handle this
+issue, such as Focal Loss . How to solve the class imbalance issue is st ill an
+open problem.
+5 Conclusions
+This paper reviews the VisDrone-DET2018 challenge and its results. Th e chal-
+lengecontainsalarge-scaledrone-basedobjectdetectiondataset,incl uding8,599
+images (6 ,471 for training, 548 for validation, and 1 ,580 for testing) with rich
+annotations, including object bounding boxes, object categories, occ lusion sta-
+tus, truncation ratios, etc. A set of 38 detectors have been evaluated on the
+released dataset. A large percentage of them have been published in re cent top
+conferences and journals, such as ICCV, CVPR, and TPAMI, and some of them
+have not yet been published (available at arXiv). The top three detec tors are
+HAL-Retina-Net (A.32), DPNet (A.34), and DE-FPN (A.3), achieving 31 .8%,
+30.92%, and 27 .10% APs, respectively.
+The VisDrone-DET2018 primary objective is to establish a community-b ased
+common platform for discussion and evaluation of detection performance on
+drones. This challenge will not only serve as a meeting place for resear chers in
+this area but also present major issues and potential opportunities. We hope the
+released dataset allows for the development and comparison of the algorithm s in The Vision Meets Drone VisDrone2018 Challenge Results 15
+the object detection ﬁelds, and workshop challenge provides a way t o track the
+process. Our future work will be focused on revising the evaluati on kit, dataset,
+as well as including more challenging vision tasks on the drone platform, through
+the feedbacks from the community.
+Acknowledgements
+This work was supported in part by the National Natural Science Foundation of
+China under Grant 61502332 and Grant 61732011, in part by Natural Science
+Foundation of Tianjin under Grant 17JCZDJC30800, in part by US National
+Science Foundation under Grant IIS-1407156 and Grant IIS-1350521, and in
+part by Beijing Seetatech Technology Co., Ltd and GE Global Research.
+A Submitted Detectors
+In this appendix, we provide a short summary of all algorithms particip ated in
+the VisDrone2018 competition. These are ordered according to the submis sions
+of their ﬁnal results.
+A.1 Improved Feature Pyramid Network (FPN+)
+Karthik Suresh, Hongyu Xu, Nitin Bansal, Chase Brown, Yunchao W ei, Zhangyang
+Wang, Honghui Shi
+k21993@tamu.edu, xuhongyu2006@gmail.com, bansa01@tamu.ed u
+chasebrown42@tamu.edu, wychao1987@gmail.com, atlaswang@tamu .edu
+honghui.shi@ibm.com
+FPN+ is improved from the Feature Pyramid Network (FPN) model . The
+main changes we made are concluded as follows: (1) We resize the input im ages
+with diﬀerent scales; (2) We use more scales of smaller anchors; (3) We e nsem-
+ble FPN models with diﬀerent anchors and parameters; (4) We employ NM S
+as another post processing step to avoid box overlap and multi-scale t esting.
+Speciﬁcally, we use a FPN with ResNet-101 pre-trained weights on Image Net
+as the backbone. We also attempt to make some changes to the training data
+(resizing it to diﬀerent shapes, cutting it into pieces, etc) .
+A.2 Fusion of Faster R-CNN and YOLOv3 (YOLO-R-CNN)
+Wenchi Ma, Yuanwei Wu, Usman Sajid, Guanghui Wang
+{wenchima, y262w558,usajid,ghwang }@ku.edu
+YOLO-R-CNN is basically a voting algorithm speciﬁcally designed for objec t
+detection. Instead of the widely used feature-level fusion for dee p neural net-
+works, our approach works at the detection-level. We train two diﬀeren t DCNN
+models, i.e., Faster R-CNN  and YOLOv3 . Then the ﬁnal detection
+results are produced by voting, weighted averages of the two above mod els. 16 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+A.3 Data Enhanced Feature Pyramid Network (DE-FPN)
+Jingkai Zhou, Yi Luo, Hu Lin, Qiong Liu
+{201510105876, 201721045510, 201721045497 }@mail.scut.edu.cn
+liuqiong@scut.edu.cn
+DE-FPN is based on the Feature Pyramid Network (FPN) model  with data
+enhancement. Speciﬁcally, we enhance the training data by image crop ping and
+color jitter. We use ResNeXt-101 64-4d as the backbone of FPN with COCO
+pre-trained model. We remove level 6 of FPN to improve small objec t detection.
+A.4 Focal Loss for Object Detection (DFS)
+Ke Bo
+kebo3@mail2.sysu.edu.cn
+DFS is based on ResNet-101 and Feature Pyramid Networks . The features
+fromConv2xare also used to detect objects, which gains about 1% improve-
+ments in mAP. Our model use other techniques including multipl e scale training
+and testing, deformable convolutions and Soft-NMS.
+A.5 Faster R-CNN by Jiangnan University (JNU Faster RCNN)
+Haipeng Zhang
+6161910043@vip.jiangnan.edu.cn
+JNUFaster RCNN is based on the Faster R-CNN algorithm  to complete
+the detection task. The source code is from Github repository named f aster-
+rcnn.pytorch2. We use trainset and valset of the VisDrone2018-DET dataset
+without additional training data to train this model. The pre-traine d model is
+Faster R-CNN with ResNet-101 backbone.
+A.6 Improved YOLOv3 (YOLOv3+)
+Siwei Wang, Xintao Lian
+285111284@qq.com
+YOLOv3+ is improved from YOLO . Speciﬁcally, we use the VisDrone2018-
+DET train set and pre-trained models on the COCO dataset to ﬁne-tune our
+model.
+2https://github.com/jwyang/faster-rcnn.pytorch The Vision Meets Drone VisDrone2018 Challenge Results 17
+A.7 Improved Faster R-CNN: (Faster R-CNN3)
+Yiling Liu, Ying Li
+liulingyi601@mail.nwpu.edu.cn, lybyp@nwpu.edu.cn
+Faster R-CNN3 is based on Faster R-CNN . We only use VisDrone2018 train
+set as the training set. Our algorithm is implemented in TITAN XP ×2, Ubuntu,
+pytorch. The testing speed is about 7s per image. The based network of Fas ter
+R-CNN is ResNet-101.
+A.8 The object detection algorithm based on Multi-Model Fusion
+(MMF)
+Yuqin Zhang, Weikun Wu, Zhiyao Guo, Minyu Huang
+{23020161153381,23020171153097 }@stu.xmu.edu.cn
+{23020171153021,23020171153029 }@stu.xmu.edu.cn
+MMF is a multi-model fusion based on Faster-RCNN  and YOLOv3 .
+The Faster-RCNN algorithm is a modiﬁcation of a published one3. We re-write
+the codes and re-set the parameters including learning rate, gamma, s tep size,
+scales, anchors and ratios. We use the ResNet-152 as the backbone. The Y-
+OLOv3 algorithm is also a modiﬁcation of a published one4. We modify the
+anchor setting by the K-means++ algorithm.
+Since the number of objects in diﬀerent categories is very unbalance d in the
+train set, we adopt the multi-model fusion method to improve the ac curacy.
+Speciﬁcally, the car category is trained using the Faster R-CNN algorith m and
+the rest categories are trained using the YOLOv3 algorithm. Moreover, th e rest
+categoriesaredividedintotwotypes:onefor pedestrian andpeople,andtheother
+one forbicycle,van,truck,tricycle,awning-tricycle ,busandmotor. Finally, the
+detection result is determined by the three models.
+A.9 Multi-Model Net based on Faster R-CNN (MMN)
+Xin Sun
+sunxin@ouc.edu.cn
+MMN is based on the Faster R-CNN network . We ﬁrst crop the train images
+into small size to avoid the resize operation. Then there cropped im ages are used
+to train diﬀerent Faster R-CNN networks. Finally we merge the resul ts to obtain
+the best classiﬁcation result.
+3https://github.com/endernewton/tf-faster-rcnn
+4https://github.com/AlexeyAB/darknet 18 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+A.10 An improved Object Detector based on Single-Shot
+Reﬁnement Neural Network (ReﬁneDet+)
+Kaiwen Duan, Honggang Qi, Qingming Huang
+duankaiwen17@mails.ucas.ac.cn, hgqi@jdl.ac.cn, qmhuang@ucas.ac.cn
+ReﬁneDet+ improves the single-shot reﬁnement Neural Network (Reﬁ neDet)
+ by proposing a new anchor matching strategy. Our anchor matching strat -
+egy is based on center point translation of anchors (CPTMatching). During the
+training phase, the detector needs to determine which anchors corr espond to an
+object bounding box. ReﬁneDet ﬁrstly matches each object to the anc hor with
+the highest jaccard overlap and then matches each anchor to an object with
+jaccard overlap higher than a threshold (usually 0 .5). However, some nearby an-
+chors whose jaccard overlap lower than the threshold may also help the bounding
+box regression. In our CPTMatching, we ﬁrst select bounding boxes p redicted
+by the anchor reﬁnement module (ARM)  to have a jaccard overlap wit h
+any object ground-truth higher than 0 .5. For each selected bounding box, we
+compute a measurement β, which is a ratio of the center point distance between
+its corresponding anchor and its matched ground-truth box to the scale of its an-
+chor. Discard those anchors whose βare larger than a threshold. The remaining
+anchors are called potential valid anchors. Finally, we align each center point of
+those potential valid anchors to the center of their nearest ground-tru th boxes.
+Anchors are preserved if their jaccard overlap higher than 0 .6 with the aligned
+ground-truth.
+A.11 An improved Object Detector based on Feature Pyramid
+Networks (FPN2)
+Zhenwei He, Lei Zhang
+{hzw, leizhang }@cqu.edu.cn
+FPN2 is based on the Feature Pyramid Networks (FPN) object detection fram e-
+work . To obtain better detection results, we improve the original FPN in
+three folds:
+– Data expansion . We extend the training set by clipping the images. The
+clipped images contain at least one object. New pictures have diﬀerent pro-
+portions of the original pictures. In our implementation, the proportion s to
+the width or height are set as 0 .5 and 0.7, which results in totally 4 kinds of
+ratios ([0 .5,0.5],[0.5,0.7],[0.7,0.7],[0.7,0.5] to the width and height, respec-
+tively). As a result, the extended datasets has 5 times number of tr aining
+pictures compared to the original dataset.
+– Keypoint classiﬁcation . We implement an auxiliary keypoint classiﬁca-
+tion task to further improve the detection accuracy. The bounding b ox is
+the border line of the foreground and background, therefore, we suppose t he
+4 corners and the center of the bounding box are the keypoints of the cor re-
+sponding object. 4 corners of the bounding box are annotated as background The Vision Meets Drone VisDrone2018 Challenge Results 19
+while the center is annotated as the category of the corresponding object in
+our implement.
+– Fusion of diﬀerent models . We train our deep model with diﬀerent ex-
+panded datasets to obtain diﬀerent models. First, we implement th e NMS to
+generate the detection results of the each deep models. Then, we cou nt the
+number of bounding boxes with the score greater than the threshold fr om
+diﬀerent deep models. If the number is more than half of the deep mo dels, we
+will keep the bounding box; otherwise we will discard it. Finally , we perform
+NMS again to generate the ﬁnal detection results.
+A.12 Modiﬁed YOLOv3 (YOLOv3++)
+Yuanwei Wu, Wenchi Ma, Usman Sajid, Guanghui Wang
+{y262w558,wenchima,usajid,ghwang }@ku.edu
+YOLOv3++ is based on YOLOv3 , which is a one stage detection method
+without using object proposals. We follow the default setting in YOLOv 3 during
+training. To improve the object detection performance, we conduct e xperiments
+byincreasingnetworkresolutionininferenceandtrainingtime,an drecalculating
+the anchor box priors on VisDrone dataset. We only use the provided train ing
+dataset to train YOLOv3 without adding additional training data, and evaluate
+the algorithm performance on the validation dataset. Then, the training an d
+validation datasets are combined together to train a new YOLOv3 model, and
+the predicted classes probabilities and bounding boxes position on t he testing
+dataset are submitted as our ﬁnal submission.
+A.13 CERTH’s Object Detector in Images (CERTH-ODI)
+Emmanouil Michail, Konstantinos Avgerinakis, Panagiotis Gianna keris, Ste-
+fanos Vrochidis, Ioannis Kompatsiaris
+{michem, koafgeri, giannakeris, stefanos, ikom }@iti.gr
+CERTH-ODI is trained on the whole training set of the VisDrone2018-DET
+dataset. However, since pedestrian and cars were dominant, compared to other
+classes, in order to balance the training set, we remove several thou sand cars
+and pedestrians annotations. For the training we use the Inception Res Net-v2
+Faster R-CNN model pre-trained on the MSCOCO dataset. In order to pro vide
+more accurate results, we use a combination of diﬀerent training set- ups: One
+with all the available object classes trained until 800 ,000 training steps, one
+with four-wheel vehicles only ( i.e.,car,van,truck,bus, because they share sim-
+ilar characteristics) and one with the remaining classes. We apply eac h model
+separately on each image, and NMS on the results, and afterwards we merge all
+the resulting bounding boxes from the diﬀerent training models . Subsequently,
+we reject overlapping bounding boxes with an IoU of 0 .6, which is chosen em-
+pirically, excluding several combinations, like people-bicycle , people-motor that
+tends to high overlap. 20 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+A.14 Modiﬁed Faster-RCNN for small objects detection
+(MFaster-RCNN)
+Wenrui He, Feng Zhu
+{hewenrui,zhufeng }@bupt.edu.cn
+MFaster-RCNN is improved from the Faster R-CNN model . Our metho d
+only uses the VisDrone2018-DET train set with data augmentation, includi ng
+cropping, zooming and ﬂipping. We use pre-trained ResNet-101 as backbone due
+to GPU limit. The tuned hyper-parameters are mainly presented as f ollows: (1)
+The anchor ratio is adjusted from [0 .5,1,2] to [0.5,1.5,2.5] which is calculated
+by K-means with training data. (2) The base size of the anchors remains 16 b ut
+the multiplicative scale is adjusted from [4 ,8,16] to [1,2,4,8,16] to detect very
+small objects. (3) The RPN positive overlap threshold which decide s whether
+the proposal is regarded as a positive sample to train the RPN is adjusted from
+0.7 to 0.5, while the RPN negative overlap threshold is adjusted from 0 .3 to 0.2.
+(4) the foreground and background thresholds for the Fast R-CNN part is 0 .5
+and 0.1, respectively. The foreground fraction is adjusted from 0 .25 to 0.4 as we
+ﬁnd these values perform the best in practice. (5) The maximal numbe r of the
+groundtruth boxes allowed to use for training in one input image is adju sted
+from 20 to 60 as we have enormous training samples per image in average.
+A.15 SSD with Comprehensive Feature Enhancement (CFE-SSDv2)
+Qijie Zhao, Feng Ni, Yongtao Wang
+{zhaoqijie,nifeng,wyt }@pku.edu.cn
+CFE-SSDv2 is an end-to-end one-stage object detector with specially designed
+novel module, namely Comprehensive Feature Enhancement (CFE) m odule. We
+ﬁrst improve the original SSD model  by enhancing the weak feature s for
+detecting small objects. Our CFE-SSDv25is designed to enhance detection a-
+bility for small objects. In addition, we apply multi-scale inferen ce strategy.
+Although training on input size of 800 ×800, we have broadened the input size
+to 2200×2200 when inferencing, leading to further improvement in detecti ng
+small objects.
+A.16 Faster R-CNN based object detection (Faster R-CNN2)
+Fan Zhang
+zhangfan 1@stu.xidian.edu.cn
+Faster R-CNN2 depends on the VisDrone2018-DET dataset, Faster R-CNN ,
+and adjusts some parameters. For example, we add a small anchor scale 642to
+detect small objects and reducing the mini-batch size from 256 to 128.
+5https://github.com/qijiezhao/CFENet The Vision Meets Drone VisDrone2018 Challenge Results 21
+A.17 DBPN+Deformable FPN+Soft NMS (DDFPN)
+Liyu Lu
+coordinate@tju.edu.cn
+DDFPN is designed for small object detection. Since the dataset contai ns a
+large amount of small objects, so we scale up the original image ﬁrst and then
+detect the objects. We use the DBPN  super resolution network to upsample
+the image. The model used for the detection task is Deformable FPN [8,29] .
+Bsides, we use Soft-NMS  as our non-maximum suppression algorithm.
+For network training, we ﬁrst divide the input image into patches wit h size of
+1024×1024, and obtain 23 ,602 training images and their corresponding labels as
+training set to train Deformable FPN. Our training process uses OHEM training
+methods . The learning rate we use in training is 0 .001, and the image input
+size we use for training is 1024 ×1024. ResNet-101 is used as the backbone and
+the weights are initialized using model pre-trained on Image-Net.
+For network testing, we use the same method as the training set to div ide
+the test image into patches with size of 512 ×512. Next, we up-sample the pre-
+viously obtained test patches to 1024 ×1024 via the DBPN network. Then we
+send these testing patches to our trained Deformable FPN to obtain 1024 ×1024
+results. In fact, the size of image corresponds to the size of the origi nal im-
+age is 512 ×512. Since the results in diﬀerent scales are consistent with the
+characteristics of visual blind spots, we use multi-scale images for t esting pur-
+pose,i.e., [688,688],[800,800], ,[1400,1400],[1600,1600],[2000,2000].
+Finally, we merge the results in each scale derived from the same image back
+into one single image, hence we obtain the ﬁnal test results.
+A.18 IIT-H Drone Object DetectiOn (IITH DODO)
+Nehal Mamgain, Naveen Kumar Vedurupaka, K. J. Joseph, Vineeth N. Balas ub-
+ramanian
+cs17mtech11023@iith.ac.in, naveenkumarvedurupaka@gmail.com
+{cs17m18p100001, vineethnb }@iith.ac.in
+IITH DODO is based on the Faster R-CNN architecture . Faster R-CNN
+has a Region Proposal Network which is trained end-to-end and shares convolu -
+tional features with the detection network thus ameliorating the comp utational
+cost of high-quality region proposals. Our model uses the Inception Res Net-v2
+ backbone for Faster R-CNN, pre-trained on the COCO dataset. The anchor
+sizes are adapted to improve the performance of the detector on small obj ects.
+To reduce the complexity of the model, only anchors of single aspect rat io are
+used. Non-maximum suppression is applied both on the region proposals and
+ﬁnal bounding box predictions. Atrous convolutions are also used. No ex ternal
+data has been used for training and no test-time augmentation is perform ed.
+The performance is the result of the detection pipeline with no en semble used. 22 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+A.19 Adjusted Faster Region-based Convolutional Neural Networks
+(Faster R-CNN+)
+Tiaojio Lee, Yue Fan, Han Deng, Lin Ma, Wei Zhang
+{tianjiao.lee, fanyue }@mail.sdu.edu.cn, 67443542@qq.com
+forest.linma@gmail.com, davidzhang@sdu.edu.cn
+Faster R-CNN+ basically follows the original algorithm of Faster R-CNN .
+However,wemakeafewadjustmentsonFasterR-CNNalgorithmtoadapttoth e
+VisDroneDet dataset. The dataset given consists of many variant-sized pr oposals
+which leads to a multi-scale object detection problem. In order to m itigate the
+impact of relatively rapid changes in scales of bounding boxes, we add mor e an-
+chorswithlargesizestoﬁtthoselargerobjectsandkeepsmallanchorsun changed
+for detecting tiny objects such as people and cars in long distance. Mor eover,
+the VisDroneDet dataset has an unbalanced object distribution. When te sting
+on validation dataset, we ﬁnd that classiﬁcation performance for car is much
+better than others for the reason that the appearance of cars is more freque nt.
+To alleviate this problem, we mask out some car bounding boxes by hand for
+pursuing better classiﬁcation performance.
+A.20 Multi-Scale Convolutional Neural Networks (MSCNN)
+Dongdong Li, Yangliu Kuai, Hao Liu, Zhipeng Deng, Juanping Zhao
+moqimubai@sina.cn
+MSCNN is a uniﬁed and eﬀective deep CNN based approach for simultaneousl y
+detecting multi-class objects in UAV images with large scales variabil ity. Similar
+to Faster R-CNN, our method consists of two sub-networks: a multi-sc ale ob-
+ject proposal network (MS-OPN)  and an accurate object detection networ k
+(AODN) . Firstly, we redesign the architecture of feature extrac tor by adopt-
+ing some recent building blocks, such as inception module, whic h can increase
+the variety of receptive ﬁeld sizes. In order to ease the inconsist ency between the
+sizes variability of objects and ﬁxed ﬁlter receptive ﬁelds, MS-O PN is performed
+with several intermediate feature maps, according to the certain sc ale ranges of
+diﬀerent objects. That is, the larger objects are proposed in deeper f eature maps
+with highly-abstracted information, whereas the smaller objects are p roposed
+in shallower feature maps with ﬁne-grained details. The object propos als from
+various intermediate feature maps are combined together to form the outp uts
+of MSOPN. Then those object proposals are sent to the AODN for accurate
+object detection. For detecting small objects appear in groups, AODN c ombines
+several outputs of intermediate layers to increase the resolution of feature maps,
+enabling small and densely packed objects to produce larger regions of s trong
+response. The Vision Meets Drone VisDrone2018 Challenge Results 23
+A.21 Feature Pyramid Networks for Object Detection (FPN3)
+Chengzheng Li, Zhen Cui
+czhengli@njust.edu.cn, zhen.cui@njust.edu.cn
+FPN3 follows the Faster R-CNN  which uses the feature pyramid . We
+make some modiﬁcations of the algorithm. First of all, since most of the obje cts
+in the VisDrone-DET2018 dataset are quite small, we add another stage feature
+based on the original P2-P6layer, we take the output of conv1which not pass
+the pool layer in ResNet  as C1, then transform it into P1whose stride is
+1/2 like what has done in FPN, the anchor size of this stage is 16, the additional
+stage is used to detect smaller objects in images. Secondly, we change t he up-
+sample by nearest pixel which has no parameters into deconvolution la yer which
+has parameters just like convolution layer, since the layers with p arameters have
+better performance compared with those without parameters. In the tr aining
+phase, we trained two model based on ResNet-50 and ResNet-101 respectiv ely,
+all training images are artiﬁcially occluded and ﬂipped to make the mod el more
+robust. In the testing phase, we combine the two results from ResNe t-50 and
+ResNet-101 as the ﬁnal results.
+A.22 Dense Feature Pyramid Net (DenseFPN)
+Xin Sun
+sunxin@ouc.edu.cn
+DenseFPN is inspired by Feature Pyramid Networks  to detect smal l ob-
+jects on the VisDrone2018 dataset. In the original FPN, they use the low-le vel
+feature to predict small objects. We use the same strategy and fuse hi gh-level
+and low-level features in a dense feature pyramid network. Meanwhi le, we crop
+the training images into small size to avoid the resize operation. The n we merge
+the results to obtain the best detection result.
+A.23 SJTU-Ottawa-detector (SOD)
+Lu Ding, Yong Wang, Chen Qian, Robert Lagani `ere, Xinbin Luo
+dinglu@sjtu.edu.cn, ywang6@uottawa.ca, qian chen@sjtu.edu.cn
+laganier@eecs.uottawa.ca, losinbin@sjtu.edu.cn
+SOD employs a pyramid like predict network to detect objects wit h large range
+of scales because pyramid like representations are wildly used in re cognition
+systems for detecting objects at diﬀerent scales . The predict ion made by
+higher level feature maps contains stronger contextual semantics whil e the lower
+level ones integrate more localized information at ﬁner spatial resoluti on. These
+predictions are hierarchically fused together to make pyramid-like decisions. We
+use this pyramid-like prediction network for RPN and region fully con volutional
+networks (R-FCN)  to perform object detection. 24 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+A.24 Ensemble of four ReﬁneDet models with multi-scale
+deployment (RD4MS)
+Oliver Acatay, Lars Sommer, Arne Schumann
+{oliver.acatay, lars.sommer, arne.schumann }@iosb.fraunhofer.de
+RD4MS is a variant of the ReﬁneDet detector , using the novel Squeez e-and-
+Excitation Network (SENet)  as the base network. We train four variants of
+the detector: three with SEResNeXt-50 and one with ResNet-50as base net work,
+each with its own set of anchor sizes. Multi-scale testing is emplo yed and the
+detection results of the four detectors are combined via weighted av eraging.
+A.25 Improved Light-Head RCNN (L-H RCNN+)
+Li Yang, Qian Wang, Lin Cheng, Shubo Wei
+liyang16361@163.com, {844021514,2643105823,914417478 }@qq.com
+L-H RCNN+ modiﬁes the published algorithm light-head RCNN . Firstly ,
+we modify the parameter “anchor scales”, replacing 32 ×32, 64×64, 128×128,
+and 256×256, 512×512 with 16 ×16, 32×32, 64×64, 128×128, and 256 ×256.
+Secondly, we modify the parameter “max boxesofimage”, replacing 50 with
+600. Thirdly, we perform NMS for all detection objects that belong to the s ame
+category.
+A.26 Improved YOLOv3 with data processing (YOLOv3 DP)
+Qiuchen Sun, Sheng Jiang
+345412791@qq.com
+YOLOv3 DP is based on the YOLOv3 model . We process the images of
+the training set. Firstly, we remove some images including pedes trians and cars.
+Secondly, we increase the brightness of some lower brightness pict ures to en-
+hance the data. Thirdly, we black out the ignored regions in the image and cu t
+the image to a size of 512 ×512 with a step size of 400. The images without
+objects will be removed. Thus the ﬁnal training set contains 31 ,406 images with
+the size of 512 ×512.
+A.27 RetinaNet implemented by Keras (Keras-RetinaNet)
+Qiuchen Sun, Sheng Jiang
+345412791@qq.com
+Keras-RetinaNet is based on the RetinaNet , which is implemented b y the
+Keras toolkit. The source codes can be found in the website: https://github.
+com/facebookresearch/Detectron . The Vision Meets Drone VisDrone2018 Challenge Results 25
+A.28 Focal Loss for Dense Object Detection (RetinaNet2)
+Li Yang, Qian Wang, Lin Cheng, Shubo Wei
+liyang16361@163.com, 844021514@qq.com
+2643105823@qq.com, 914417478@qq.com
+RetinaNet2 is based on the RetinaNet  algorithm. The short size of images i s
+set as 800, and the maximum size of the image is set as 1 ,333. Each mini-batch
+has 1 image per GPU for training/testing.
+A.29 Multiple-scale yolo network (MSYOLO)
+Haoran Wang, Zexin Wang, Ke Wang, Xiufang Li
+18629585405@163.com, 1304180668@qq.com
+MSYOLO is the multiple scale YOLO network . We divide these categorie s
+into three cases according to the scale of object categories. First of all , ignored
+regions and the otherscategory is the ﬁrst case for areas that are not trained.
+Second, since many categories are not in the same scale, we divide them i nto big
+objects and small objects on the basis of their scale of boxes. The big obj ects
+includecar,truck,vanandbus, and small objects contain pedestrian ,people,
+bicycle,motor,tricycleandawning-tricycle . The big objects as the center of cut
+images have the scale of 480 ×480, and small objects have the scale of 320 ×320.
+A.30 Region-based single-shot reﬁnement network (R-SSRN)
+Wenzhe Yang, Jianxiu Yang
+wzyang@stu.xidian.edu.cn, jxyang xidian@outlook.com
+R-SSRN is based on the deep learning method called ReﬁneDet . We do
+modiﬁcations as follows: (1) We remove the deep convolutional layers af terfc7
+because they are useless for the VisDrone small objects detection; (2) We added
+additional small scales default boxes at conv33and set new aspect ratios by
+using k-means cluster algorithm on the VisDrone dataset. The change of scal es
+and aspect radios can help default boxes more suitable for the objects; ( 3) Due
+to the small and dense objects, we split each image to 5 sub images ( i.e., bottom
+left, bot-tom right, middle, top left, top right), where the size of e ach sub image
+is 1/4 of that of original image. After testing the sub images, we merge them by
+using NMS.
+A.31 A Highly Accurate Object Detectior In Drone Scenarios
+(AHOD)
+Jianqiang Wang, Yali Li, Shengjin Wang
+wangjian16@mails.tsinghua.edu.cn, liyali@ocrserv.ee.tsinghua .edu.cn
+wgsgj@tsinghua.edu.cn 26 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+AHOD is a novel detection method with high accuracy in drone scenarios. First,
+a feature fusion backbone network with the capability of modelling geom etric
+transformations is proposed to extract object features. Second, a spec ial object
+proposal sub-network is applied to generate candidate proposals using mu lti-
+level semantic feature maps. Finally, a head network reﬁnes the cate gories and
+locations of these proposals.
+A.32 Hybrid Attention based Low-Resolution Retina-Net
+(HAL-Retina-Net)
+Yali Li, Zhaoyue Xia, Shengjin Wang
+{liyali13, wgsgj }@tsinghua.edu.cn
+HAL-Retina-Net is improved from Retina-Net . To detect low-resolut ion ob-
+jects, we remove P6andP7from the pyramid. Therefore the pyramid of the
+network includes three pathways, named as P1,P3, andP5. We inherit the
+head design of Retina-Net. Furthermore, the post-processing steps include Soft-
+NMS  and bounding box voting. We ﬁnd that bounding box voting improv e
+the detection accuracy signiﬁcantly. Furthermore, we note that by in creasing
+the normalized size of images the improvement is also signiﬁcant. To e ncourage
+the full usage of training samples, we split the images into patches wi th size
+640×640. To avoid out-of-memory in detection, we use SE-ResNeXt-50  as
+the backbone network and train the Retina-Net with the cropped sub-im ages.
+To further improve the detection accuracy, we add the hybrid atten tion mecha-
+nism. That is, we use additional SE module  and downsample-upsampl e 
+to learn channel attention and spatial attention. Our ﬁnal detection res ults on
+test challenge are based on the ensemble of modiﬁed Retina-net with t he above
+two kinds of attention.
+A.33 Small Object Detection in Large Scene based on YOLOv3
+(SODLSY)
+Sujuan Wang, Yifan Zhang, Jian Cheng
+Wangsujuan@airia.cn, {yfzhang,jcheng }@nlpr.ia.ac.cn
+SODLSY is used to detect objects in various weather and lighting condi tion-
+s, representing diverse scenarios in our daily life. The maximum r esolution of
+VOC images is 469 ×387, and 640 ×640 for COCO images. However, the static
+images in VisDrone2018 are even 2000 ×1500. Our algorithm ﬁrst increases the
+size of training images to 1184, ensuring the information of small objects is not
+lost during image resizing. Thus, we adopt multi-scale (800 ,832,864,···,1376)
+training method to improve the detection results. We also re-gen erate the an-
+chors for VisDrone-DET2018. The Vision Meets Drone VisDrone2018 Challenge Results 27
+A.34 Drone Pyramid Networks (DPNet)
+HongLiang Li, Qishang Cheng, Wei Li, Xiaoyu Chen, Heqian Qiu, Zichen S ong
+hlli@uestc.edu.cn, cqs@std.uestc.edu.cn, weili.cv@gmail.com
+xychen9459@gmail.com, hqqiu@std.uestc.edu.cn, szc.uestc@gmail.com
+DPNetconsistsofthreeobjectdetectorsbasedontheFasterR-CNNme thod,
+by Caﬀe2 deep learning framework, in parallel, on 8 GPUs. The design of DP -
+Net follows the idea of FPN , whose feature extractors are ResNet-50  ,
+ResNet101, and ResNeXt , respectively which are pre-trained on ImageNet
+only. To make full use of the data, the methods are designed as follows:
+–No additional data other than the train + val dataset are used for network
+training.
+–We train Faster-RCNN with FPN using multiple scales (1000 ×1000, 800 ×
+800, 600 ×600) to naturally handle objects of various sizes, generating im-
+provement of 4%.
+–When selecting the prior boxes, we set multiple speciﬁc aspect ratios based
+on the scale distribution of the training data.
+–We change the IOU threshold from 0 .5 to 0.6 and removed the last FPN
+layer, yielding an improvement of 1 .5%.
+We use Soft-NMS  instead of the conventional NMS to select predicted boxes.
+We replace RoIPooling with RoIAlign  to perform feature quantiﬁcation .
+We use multi-scale training and testing. On the validation set, our be st single
+detector obtains mAP 49 .6%, and the ensemble of three detectors achieves mAP
+50.0%.
+A.35 Feature pyramid networks for object detection (FPN)
+Submitted by the VisDrone Committee
+FPN takes advantage of featurized image pyramids to construct deep convolu -
+tional networks with inherent multi-scale and pyramidal hierarchy. It combines
+low-resolution but semantically strong features and high-resolution but seman-
+tically weak features. Thus it exploits rich semantic information fr om all scales
+and is trained in an end-to-end way. The experimental results show this archi-
+tecture can signiﬁcantly improve the generic deep models in seve ral ﬁelds. Please
+refer to  for more details.
+A.36 Object Detection via Region-based Fully Convolutional
+Networks (R-FCN)
+Submitted by the VisDrone Committee
+R-FCN is the region-based fully convolutional networks for object dete ction
+without ROI-wise sub-network. Diﬀerent from previous methods s uch as Fast 28 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+R-CNN and Faster R-CNN using a costly pre-region subnetwork, R-FCN ad-
+dresses the dilemma between translation-invariance in image classi ﬁcation and
+translation-variance in object detection using the position-sensit ive score maps.
+That is, almost all the computation is shared on the whole image. It also can
+adopt recent state-of-the-art classiﬁcation network backbones ( e.g., ResNet and
+Inception) for better performance. Please refer to  for more detail s.
+A.37 Towards Real-Time Object Detection with Region Proposal
+Networks (Faster R-CNN)
+Submitted by the VisDrone Committee
+Faster R-CNN improves Fast R-CNN  by adding Region Proposal Network
+(RPN). RPN shares full-image convolutional features with the detecti on network
+in a nearly cost-free way. Speciﬁcally, it is implemented as a ful ly convolutional
+network that predict object bounding boxes and their scores at the sam e time.
+Given object proposals by the RPN, the Fast R-CNN model shares the convo-
+lutional features and then detect object eﬃciently. Please refer t o  for more
+details.
+A.38 Single Shot MultiBox Detector (SSD)
+Submitted by the VisDrone Committee
+SSD is the one-stage object detection method based a single deep neur al network
+without proposal generation. It uses a set of pre-set anchor boxes with d iﬀerent
+aspect ratios and scales, and then discretize the output space of boundi ng box-
+es. To deal with multi-scale object detection, the network combine s predictions
+from several feature maps in diﬀerent layers. Notably, it predicts t he score of
+each object category and adjusts the corresponding bounding box simult aneous-
+ly. The network is optimized via a multi-task loss including conﬁd ence loss and
+localization loss. Finally, the multi-scale bounding boxes are conve rted to the
+detection results using the NMS strategy. Please refer to  for more details.
+References
+1. Agarwal, S., Awan, A., Roth, D.: Learning to detect objects in i mages via a sparse,
+part-based representation. TPAMI 26(11), 1475–1490 (2004)
+2. Andriluka, M., Roth, S., Schiele, B.: People-tracking-by- detection and people-
+detection-by-tracking. In: CVPR. IEEE Computer Society (20 08)
+3. Bodla, N., Singh, B., Chellappa, R., Davis, L.S.: Soft-nms - improving object de-
+tection with one line of code. In: ICCV. pp. 5562–5570 (2017)
+4. Cai, Z., Fan, Q., Feris, R.S., Vasconcelos, N.: A uniﬁed mul ti-scale deep convolu-
+tional neural network for fast object detection. In: ECCV. pp. 35 4–370 (2016)
+5. Cai, Z., Vasconcelos, N.: Cascade R-CNN: delving into hig h quality object detec-
+tion. CoRR abs/1712.00726 (2017) The Vision Meets Drone VisDrone2018 Challenge Results 29
+6. Chen, X., Wu, Z., Yu, J.: Dual reﬁnement network for single-sho t object detection.
+CoRRabs/1807.08638 (2018),http://arxiv.org/abs/1807.08638
+7. Dai, J., Li, Y., He, K., Sun, J.: R-FCN: object detection via re gion-based fully
+convolutional networks. In: NIPS. pp. 379–387 (2016)
+8. Dai, J., Qi, H., Xiong, Y., Li, Y., Zhang, G., Hu, H., Wei, Y.: Deformable convo-
+lutional networks. In: ICCV. pp. 764–773 (2017)
+9. Dalal, N., Triggs, B.: Histograms of oriented gradients for huma n detection. In:
+CVPR. pp. 886–893 (2005)
+10. Deng, J., Dong, W., Socher, R., Li, L., Li, K., Li, F.: Imagene t: A large-scale
+hierarchical image database. In: CVPR. pp. 248–255 (2009)
+11. Doll´ ar, P., Wojek, C., Schiele, B., Perona, P.: Pedestrian de tection: An evaluation
+of the state of the art. TPAMI 34(4), 743–761 (2012)
+12. Enzweiler, M., Gavrila, D.M.: Monocular pedestrian detecti on: Survey and exper-
+iments. TPAMI 31(12), 2179–2195 (2009)
+13. Ess, A., Leibe, B., Gool, L.J.V.: Depth and appearance for mo bile scene analysis.
+In: ICCV. pp. 1–8 (2007)
+14. Everingham, M., Van Gool, L., Williams, C.K.I., Winn, J., Zisserman, A.:
+The PASCAL Visual Object Classes Challenge 2012 (VOC2012) Re sults.
+http://www.pascal-network.org/challenges/VOC/voc2012/ workshop/index.html
+15. Everingham, M., Eslami, S.M.A., Gool, L.J.V., Williams, C.K.I., Winn, J.M.,
+Zisserman, A.: The pascal visual object classes challenge: A re trospective. IJCV
+111(1), 98–136 (2015)
+16. Everingham, M., Gool, L.J.V., Williams, C.K.I., Winn, J. M., Zisserman, A.: The
+pascal visual object classes (VOC) challenge. IJCV 88(2), 303–338 (2010)
+17. Felzenszwalb, P.F., Girshick, R.B., McAllester, D.A., Ram anan, D.: Object detec-
+tion with discriminatively trained part-based models. TPAMI 32(9), 1627–1645
+(2010)
+18. Fu, C., Liu, W., Ranga, A., Tyagi, A., Berg, A.C.: DSSD : Decon volutional sin-
+gle shot detector. CoRR abs/1701.06659 (2017),http://arxiv.org/abs/1701.
+06659
+19. Geiger, A., Lenz, P., Urtasun, R.: Are we ready forautonomous driving? the KITTI
+vision benchmark suite. In: CVPR. pp. 3354–3361 (2012)
+20. Girshick, R.B.: Fast R-CNN. In: ICCV. pp. 1440–1448 (2015 )
+21. Girshick, R.B., Donahue, J., Darrell, T., Malik, J.: Rich featu re hierarchies for ac-
+curate object detection and semantic segmentation. In: CVPR. pp. 580–587 (2014)
+22. Haris, M., Shakhnarovich, G., Ukita, N.: Deep back-projectio n networks for super-
+resolution. CoRR abs/1803.02735 (2018)
+23. He, K., Gkioxari, G., Doll´ ar, P., Girshick, R.B.: Mask R-CNN . In: ICCV. pp.
+2980–2988 (2017)
+24. He, K., Zhang, X., Ren, S., Sun, J.: Spatial pyramid poolin g in deep convolutional
+networks for visual recognition. TPAMI 37(9), 1904–1916 (2015)
+25. He, K., Zhang, X., Ren, S., Sun, J.: Deep residual learning for image recognition.
+In: CVPR. pp. 770–778 (2016)
+26. Hsieh,M.,Lin,Y.,Hsu,W.H.:Drone-basedobjectcountingb yspatiallyregularized
+regional proposal network. In: ICCV (2017)
+27. Hu, J., Shen, L., Sun, G.: Squeeze-and-excitation netwo rks. CoRR ab-
+s/1709.01507 (2017)
+28. Li, Z., Peng, C., Yu, G., Zhang, X., Deng, Y., Sun, J.: Light -head R-CNN: in
+defense of two-stage object detector. CoRR abs/1711.07264 (2017)
+29. Lin, T., Doll´ ar, P., Girshick, R.B., He, K., Hariharan, B., Be longie, S.J.: Feature
+pyramid networks for object detection. In: CVPR. pp. 936–944 (20 17) 30 P. Zhu, L. Wen, D. Du, X. Bian, B. Ling, et al..
+30. Lin, T., Goyal, P., Girshick, R.B., He, K., Doll´ ar, P.: Foca l loss for dense object
+detection. In: ICCV. pp. 2999–3007 (2017)
+31. Lin, T., Maire, M., Belongie, S.J., Hays, J., Perona, P., Ra manan, D., Doll´ ar, P.,
+Zitnick, C.L.: Microsoft COCO: common objects in context. In: E CCV. pp. 740–
+755 (2014)
+32. Liu, W., Anguelov, D., Erhan, D., Szegedy, C., Reed, S.E., Fu , C., Berg, A.C.:
+SSD: single shot multibox detector. In: ECCV. pp. 21–37 (2016)
+33. Lyu, S., Chang, M., Du, D., Wen, L., Qi, H., Li, Y., Wei, Y., Ke , L., Hu, T., Coco,
+M.D., Carcagn` ı, P., et al.: UA-DETRAC 2017: Report of AVSS2017 & IWT4S
+challenge on advanced traﬃc monitoring. In: AVSS. pp. 1–7 (201 7)
+34. Mundhenk, T.N., Konjevod, G., Sakla, W.A., Boakye, K.: A l arge contextual
+dataset for classiﬁcation, detection and counting of cars wit h deep learning. In:
+ECCV. pp. 785–800 (2016)
+35.¨Ozuysal, M., Lepetit, V., Fua, P.: Pose estimation for catego ry speciﬁc multiview
+object localization. In: CVPR. pp. 778–785 (2009)
+36. Razakarivony, S., Jurie, F.: Vehicle detection in aerial im agery : A small target
+detection benchmark. Journal of Visual Communication and Ima ge Representation
+34, 187–203 (2016)
+37. Redmon,J.,Divvala,S.K.,Girshick,R.B.,Farhadi,A.:You onlylookonce:Uniﬁed,
+real-time object detection. In: CVPR. pp. 779–788 (2016)
+38. Redmon, J., Farhadi, A.: YOLO9000: better, faster, stronger. I n: CVPR. pp. 6517–
+6525 (2017)
+39. Redmon, J., Farhadi, A.: Yolov3: An incremental improvemen t. CoRR ab-
+s/1804.02767 (2018)
+40. Ren, S., He, K., Girshick, R.B., Sun, J.: Faster R-CNN: tow ards real-time object
+detection with region proposal networks. TPAMI 39(6), 1137–1149 (2017)
+41. Russakovsky, O., Deng, J., Su, H., Krause, J., Satheesh, S. , Ma, S., Huang, Z.,
+Karpathy, A., Khosla, A., Bernstein, M.S., Berg, A.C., Li, F.: I magenet large scale
+visual recognition challenge. IJCV 115(3), 211–252 (2015)
+42. Shrivastava, A., Gupta, A., Girshick, R.B.: Training region -based object detectors
+with online hard example mining. In: CVPR. pp. 761–769 (2016)
+43. Szegedy, C., Ioﬀe, S., Vanhoucke, V., Alemi, A.A.: Incep tion-v4, inception-resnet
+andtheimpactofresidualconnectionsonlearning.In:AAAI.p p.4278–4284(2017)
+44. Uijlings, J.R.R., van de Sande, K.E.A., Gevers, T., Smeuld ers, A.W.M.: Selective
+search for object recognition. IJCV 104(2), 154–171 (2013)
+45. Viola, P.A., Jones, M.J.: Rapid object detection using a b oosted cascade of simple
+features. In: CVPR. pp. 511–518 (2001)
+46. Wang, F., Jiang, M., Qian, C., Yang, S., Li, C., Zhang, H., Wang, X., Tang,
+X.: Residual attention network for image classiﬁcation. In: C VPR. pp. 6450–6458
+(2017)
+47. Wen, L., Du, D., Cai, Z., Lei, Z., Chang, M., Qi, H., Lim, J., Y ang, M., Lyu,
+S.: UA-DETRAC: A new benchmark and protocol for multi-object det ection and
+tracking. CoRR abs/1511.04136 (2015)
+48. Xie, S., Girshick, R.B., Doll´ ar, P., Tu, Z., He, K.: Aggregat ed residual transforma-
+tions for deep neural networks. In: CVPR. pp. 5987–5995 (2017)
+49. Zhang, S., Wen, L., Bian, X., Lei, Z., Li, S.Z.: Occlusion -aware R-CNN: detecting
+pedestrians in a crowd. In: ECCV (2018)
+50. Zhang,S.,Wen,L.,Bian,X.,Lei,Z.,Li,S.Z.:Single-sh otreﬁnementneuralnetwork
+for object detection. In: CVPR (2018)
+51. Zhang, Z., Qiao, S., Xie, C., Shen, W., Wang, B., Yuille, A .L.: Single-shot object
+detection with enriched semantics. In: CVPR (2018)
