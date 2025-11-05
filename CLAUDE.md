@@ -27,6 +27,7 @@ OPENAI_API_KEY=sk-proj-...
 Optional for specific chapters:
 - `ACTIVELOOP_TOKEN` (Chapters 3, 7 - Deep Lake)
 - `PINECONE_API_KEY` (Chapter 6)
+- `OPENROUTER_API_KEY` (Chapter 8)
 - `TAVILY_API_KEY`, `LANGCHAIN_API_KEY` (Advanced features)
 
 **spaCy Models:**
@@ -153,15 +154,31 @@ Multiple index types with performance trade-offs:
 # KeywordTableIndex: Keyword-optimized
 ```
 
-### Chapters 4, 10: Multimodal RAG
+### Chapter 4: Multimodal RAG
 - Image/video frame extraction
 - Object detection (YOLO models)
 - Unified text+vision embedding space
 
-### Chapter 6: Scaling with Pinecone
-- Cloud-based vector database
-- Production-grade indexing
-- Three-phase pipeline: collection → indexing → generation
+**Critical Variable Flow:**
+```python
+# Text pipeline
+documents_llm = [...]  # From ChromaDB data
+vector_query_engine_llm = vector_store_index_llm.as_query_engine(...)
+llm_response = vector_query_engine_llm.query(user_input)
+
+# Image pipeline
+documents = [...]  # From DeepLake image labels
+vector_query_engine = vector_store_index.as_query_engine(...)
+response = vector_query_engine.query(user_input)
+multimodal_response = response  # CRITICAL: Save before overwriting!
+```
+
+**Key Functions:**
+- `get_unique_words()` - Extracts unique words from retrieved text
+- `process_and_display()` - Matches query target to image dataset
+- `display_image_with_bboxes()` - Renders images with object detection boxes
+- `display_source_image()` - Shows saved images
+- `calculate_cosine_similarity_with_embeddings()` - Performance evaluation
 
 ### Chapter 5: Adaptive RAG (Human-in-the-Loop)
 **Critical Migration Note:** This chapter was migrated from Google Colab to local Jupyter. All code now uses:
@@ -206,11 +223,80 @@ if ranking >= 5:
 - Wikipedia fetch errors: Fixed with comprehensive error handling in `fetch_and_clean()`
 - Icon images not found: Place in `commons/` directory or use emoji fallback
 
+### Chapter 6: Scaling with Pinecone
+- Cloud-based vector database
+- Production-grade indexing
+- Three-phase pipeline: collection → indexing → generation
+
 ### Chapter 8: Dynamic RAG (Open-Source)
-- Hugging Face Llama-2 integration
-- Cost-effective alternative to OpenAI
-- Real-time dataset updates
+**Critical Migration:** Migrated from local Hugging Face models to OpenRouter cloud API to avoid 13.5GB model downloads and GPU requirements.
+
+**Key Architecture:**
+- Uses OpenRouter API instead of local models
+- No model downloads required
+- Free tier available (`gpt-oss-20b` model)
+- OpenAI client library for clean API calls
+- Manual HTTP requests method documented for learning
 - SciQ dataset (10,481 Q&A pairs)
+
+**Critical Variable Naming (Avoid Conflicts):**
+```python
+# ChromaDB client
+import chromadb
+client = chromadb.Client()  # Ephemeral (in-memory)
+
+# OpenRouter API client (MUST use different variable name)
+from openai import OpenAI
+openai_client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY")
+)
+```
+
+**LLaMA2 Function Pattern:**
+```python
+def LLaMA2(prompt):
+    """Uses openai_client (not client) to avoid ChromaDB conflict"""
+    response = openai_client.chat.completions.create(
+        model=MODEL,  # e.g., "gpt-oss-20b"
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=100
+    )
+    return [{'generated_text': response.choices[0].message.content}]
+```
+
+**ChromaDB Auto-Cleanup Pattern:**
+```python
+# Cells 26-28: Ensure fresh database on each run
+client = chromadb.Client()
+try:
+    client.delete_collection(collection_name)
+    print(f"✓ Deleted existing collection")
+except:
+    print(f"✓ No existing collection to delete")
+```
+
+**Cell Execution Order (Critical):**
+1. Cell 8: Define MODEL variable
+2. Cell 11: Initialize openai_client (uses MODEL)
+3. Cell 51: Define LLaMA2 function (uses openai_client)
+4. Cell 54+: Use LLaMA2 function
+
+**If you change MODEL in cell 8, you MUST re-run cell 11!**
+
+**Performance Notes:**
+- Embedding: ~930 seconds (acceptable)
+- Querying: ~840 seconds (acceptable)
+- Evaluation (cell 44): 800+ minutes (OPTIONAL - can skip)
+- Generation: 2-5 seconds per query
+
+**Batch Processing Limits:**
+```python
+# ChromaDB max batch size: 5461
+batch_size = 5000  # Safe margin
+for batch_idx in range(total_batches):
+    collection.add(ids=[...], documents=[...], metadatas=[...])
+```
 
 ## Embedding Strategy
 
@@ -262,6 +348,19 @@ with open('file.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 ```
 
+### Variable Not Defined Errors
+**Cell Execution Order Critical:**
+- Chapter 8: Must run cells in order: 8 (MODEL) → 11 (openai_client) → 51 (LLaMA2) → 54+ (usage)
+- If you change MODEL in cell 8, re-run cell 11 to update openai_client context
+- Always run data collection before embedding, embedding before generation
+
+### Long-Running Cells
+**Chapter 8 Cell 44 (Evaluation):**
+- Takes 800+ minutes to process 10,481 similarity calculations
+- This cell is OPTIONAL - only measures retrieval quality
+- Can safely skip and continue to cell 47 for RAG generation
+- If stuck, interrupt kernel and skip this cell
+
 ## Performance Metrics Reference
 
 **Expected Values (Chapter 2 baseline):**
@@ -276,6 +375,11 @@ Vector Index:  0.6312 (speed/accuracy balance)
 Tree Index:    0.1686 (hierarchical summarization)
 List Index:    0.0475 (most thorough, slowest)
 ```
+
+**Chapter 8 Processing Times:**
+- Embedding 10,481 docs: ~930 seconds (15.5 min)
+- Querying 10,481 questions: ~840 seconds (14 min)
+- Similarity evaluation: 800+ minutes (OPTIONAL - can skip)
 
 ## Data Storage Patterns
 
@@ -297,11 +401,13 @@ List Index:    0.0475 (most thorough, slowest)
 
 2. **Fixed Chunking:** 1000-character chunks with no overlap (simple but may lose boundary context)
 
-3. **Batch Processing:** 100 chunks per embedding batch (balance API rate limits vs. speed)
+3. **Batch Processing:** 100 chunks per embedding batch (balance API rate limits vs. speed); 5000 for ChromaDB inserts
 
 4. **Model Progression:** Start with GPT-4o (balanced), upgrade to reasoning models (o1, o3) only when needed for complex logic
 
 5. **Evaluation Strategy:** Dual metrics (TF-IDF + embeddings) to catch both keyword and semantic relevance
+
+6. **Chapter 8 Cloud API:** Use OpenRouter instead of local models to avoid 13.5GB downloads and GPU requirements
 
 ## Chapter Dependency Graph
 
@@ -345,12 +451,16 @@ for i, dist in enumerate(results['distances'][0]):
 2. Cache embeddings to avoid regeneration
 3. Limit `N_RESULTS` to minimum needed (default 10, try 3-5)
 4. Use GPT-4o-mini for non-critical generation (Chapter 9)
-5. Implement Chapter 8 pattern (open-source Llama-2) for high-volume
+5. Implement Chapter 8 pattern (OpenRouter with free models)
 
 **Typical Costs (Chapter 2 example, 1145 chunks):**
 - Embedding generation: ~$0.03 (one-time)
 - Query embeddings: ~$0.0001 per query
 - GPT-4o generation: ~$0.01-0.05 per response
+
+**Chapter 8 OpenRouter Costs:**
+- Free models: `gpt-oss-20b`, `mistralai/mistral-7b-instruct:free`, `google/gemma-2-9b-it:free`
+- Paid models: ~$0.00001-0.00007 per 1K tokens (very cheap)
 
 ## Multimodal Extensions
 
@@ -377,7 +487,7 @@ for i, dist in enumerate(results['distances'][0]):
 - Enterprise: Multi-agent + fine-tuning (Chapters 9-10)
 
 **Reliability Patterns:**
-- Batch processing for robustness (100 docs/batch)
+- Batch processing for robustness (100-5000 docs/batch)
 - Retry mechanisms for API failures
 - Multiple retrieval strategy fallbacks (Chapter 1 Modular RAG)
 - Configurable timeouts
@@ -388,28 +498,41 @@ for i, dist in enumerate(results['distances'][0]):
 **Workaround:** Use `deeplake<4.0` (v3.9.52) specified in `pyproject.toml`
 
 **Issue:** ChromaDB collection already exists
-**Workaround:** Auto-delete pattern (Chapter 2, notebook 2) - recreates collection on each run
+**Workaround:** Auto-delete pattern - recreates collection on each run
 
 **Issue:** Markdown not rendering in notebooks
 **Workaround:** Use `display(Markdown(text))` from `IPython.display`, not `markdown.markdown()`
 
 **Issue:** ipywidgets warning for progress bars
-**Workaround:** Install `ipywidgets` (included in dependencies since Chapter 5 update)
+**Workaround:** Install `ipywidgets` (included in dependencies)
 
-**Issue:** Chapter 5 `fetch_and_clean()` AttributeError: 'NoneType' object has no attribute 'find'
-**Workaround:** Fixed in latest version with null checks and comprehensive error handling
+**Issue:** Chapter 5 `fetch_and_clean()` AttributeError
+**Workaround:** Fixed with null checks and comprehensive error handling
 
 **Issue:** Pydantic validation warnings with LlamaIndex 0.10.x
 **Workaround:** Downgrade to `pydantic==2.7.4` or wait for LlamaIndex update
 
-## Notebook Editing Best Practices
+**Issue:** Chapter 8 - Cell 44 taking 800+ minutes
+**Cause:** Similarity evaluation on 10,481 documents using spaCy is extremely slow
+**Workaround:** Skip cell 44 (evaluation) - it's optional for measuring retrieval quality
 
-When editing Jupyter notebooks programmatically:
+**Issue:** Chapter 8 - Naming conflict between ChromaDB client and OpenAI client
+**Workaround:** Use `client` for ChromaDB and `openai_client` for OpenRouter
+
+**Issue:** Chapter 8 - Empty responses from LLM
+**Cause:** MODEL variable changed but openai_client not re-initialized
+**Workaround:** Always re-run cell 11 after changing MODEL in cell 8
+
+**Issue:** Chapter 8 - Variable not defined errors
+**Cause:** Cells run out of order
+**Workaround:** Always run: 8 → 11 → 26-29 → 35 → 40 → 51 → 54+
+
+## Notebook Editing Best Practices
 
 **Critical Variables to Track:**
 - Always verify that key variables are defined before usage
-- Common missing variables after cell deletion: `ind`, `documents`, query engines, response objects
-- Use Python scripts to edit notebooks (JSON manipulation) for complex operations
+- Common missing variables: `ind`, `documents`, query engines, response objects
+- Use Python scripts for complex notebook editing (JSON manipulation)
 
 **Variable Naming Conventions:**
 - `vector_query_engine_llm` - Query engine for text-based LLM RAG
@@ -418,70 +541,10 @@ When editing Jupyter notebooks programmatically:
 - `response` - Generic query response (often gets overwritten)
 - `documents_llm` - LlamaIndex Documents from text data
 - `documents` - Documents from image/multimodal data
+- `client` - ChromaDB client (Chapter 8)
+- `openai_client` - OpenRouter API client (Chapter 8)
 
 **Cell Dependencies:**
 - Cell order matters: define before use
 - Save critical responses immediately after generation
-- Import statements should precede usage (sklearn, PIL, etc.)
-
-## Chapter 4 Specific Notes
-
-### Multimodal RAG Architecture
-
-**Two Parallel Pipelines:**
-1. **Text Pipeline (LLM):** ChromaDB → LlamaIndex → GPT-4o text response
-2. **Image Pipeline (Vision):** DeepLake → LlamaIndex → GPT-4o vision analysis
-
-**Critical Variable Flow:**
-```python
-# Pipeline 1: Text RAG
-documents_llm = [...]  # From ChromaDB data
-vector_store_index_llm = VectorStoreIndex.from_documents(documents_llm)
-vector_query_engine_llm = vector_store_index_llm.as_query_engine(...)
-llm_response = vector_query_engine_llm.query(user_input)
-
-# Pipeline 2: Multimodal RAG
-documents = [...]  # From DeepLake image labels
-vector_store_index = GPTVectorStoreIndex.from_documents(documents)
-vector_query_engine = vector_store_index.as_query_engine(...)
-response = vector_query_engine.query(user_input)
-multimodal_response = response  # CRITICAL: Save before overwriting!
-```
-
-**Key Functions:**
-- `get_unique_words()` - Extracts unique words from retrieved text
-- `process_and_display()` - Matches query target to image dataset
-- `display_image_with_bboxes()` - Renders images with object detection boxes
-- `display_source_image()` - Shows saved images
-- `calculate_cosine_similarity_with_embeddings()` - Performance evaluation
-
-### DeepLake Integration Pattern
-```python
-# Load cloud dataset (read-only)
-dataset_path = 'hub://activeloop/visdrone-det-train'
-ds = deeplake.load(dataset_path)  # 6,471 images
-
-# Convert to pandas DataFrame
-df = pd.DataFrame(columns=['image', 'boxes', 'labels'])
-for i, sample in enumerate(ds):
-    df.loc[i, 'image'] = sample.images.tobytes()
-    df.loc[i, 'boxes'] = [box.tolist() for box in sample.boxes.numpy(aslist=True)]
-    df.loc[i, 'labels'] = sample.labels.data()['text']
-
-# Add unique IDs for LlamaIndex
-df['doc_id'] = df.index.astype(str)
-```
-
-### Intelligent Target Detection
-The notebook uses query-aware object detection:
-```python
-# Extract target object from user query
-query_words = user_input.lower().split()  # "How do drones identify a truck?"
-target_word = None
-for word in unique_words:  # ["truck", "car", "van"]
-    if word in query_words:  # Matches "truck"
-        target_word = word
-        break
-```
-
-This ensures bounding boxes match the user's intent, not just the most frequent object.
+- Import statements should precede usage
